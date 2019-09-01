@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Adrimar</string>
+    <string name="edUsuario">Usuario</string>
+    <string name="edContraseña">Contraseña</string>
+    <string name="edLlave">Llave</string>
+    <string name="btLogin">Login</string>
+    <string name="ImagenView">logo</string>
+</resources>

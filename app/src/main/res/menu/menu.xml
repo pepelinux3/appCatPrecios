@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/me_search"
+        android:icon="@drawable/ic_search"
+        android:title="New Email"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/me_existencia"
+        android:title="Existencia"
+        app:showAsAction="never"/>
+
+
+    <item
+        android:id="@+id/me_promocion"
+        android:title="Promociones"
+        app:showAsAction="never"/>
+
+</menu>

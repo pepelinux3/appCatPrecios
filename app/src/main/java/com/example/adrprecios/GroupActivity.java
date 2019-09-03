@@ -10,12 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 public class GroupActivity extends AppCompatActivity {
 
     RecyclerView recyclerGroup;
+    GruopAdapter adapter;
     private Toolbar toolbar;
 
     @Override
@@ -32,7 +35,7 @@ public class GroupActivity extends AppCompatActivity {
         final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
         databaseAcces.open();
 
-        GruopAdapter adapter = new GruopAdapter(databaseAcces.getGrupos());
+        adapter = new GruopAdapter(databaseAcces.getGrupos());
         recyclerGroup.setAdapter(adapter);
 
         databaseAcces.close();
@@ -88,6 +91,22 @@ public class GroupActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
+
+        MenuItem searchGroup = menu.findItem(R.id.me_search);
+        SearchView searchView = (SearchView) searchGroup.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }

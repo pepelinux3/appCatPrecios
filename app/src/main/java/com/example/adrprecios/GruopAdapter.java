@@ -5,20 +5,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GruopAdapter
         extends RecyclerView.Adapter<GruopAdapter.ViewHolderGroup>
-        implements View.OnClickListener {
+        implements View.OnClickListener, Filterable {
 
-    ArrayList <GroupVo> groupList;
+    List <GroupVo> groupList;
+    List <GroupVo> groupListFull;
+
     private View.OnClickListener listener;
 
     public GruopAdapter(ArrayList<GroupVo> groupList) {
         this.groupList = groupList;
+        groupListFull = new ArrayList<>(groupList);
     }
 
     @NonNull
@@ -57,6 +63,42 @@ public class GruopAdapter
             listener.onClick(v);
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        return listFilter;
+    }
+
+    private Filter listFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<GroupVo> filteredList = new ArrayList<>();
+
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(groupListFull);
+            } else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for(GroupVo oneGroup: groupListFull){
+                    if(oneGroup.getGruNombre().toLowerCase().contains(filterPattern)){
+                        filteredList.add(oneGroup);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            groupList.clear();
+            groupList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class ViewHolderGroup extends RecyclerView.ViewHolder {
         ImageView vhgVineta;

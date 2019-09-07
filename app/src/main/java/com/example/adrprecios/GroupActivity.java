@@ -111,6 +111,17 @@ public class GroupActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.me_listaCompleta){
+            Toast.makeText(this, "Existencias de articulos", Toast.LENGTH_SHORT).show();
+            Intent preciosFull = new Intent(this, PreciosFullActivity.class);
+            startActivity(preciosFull);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void menuIconColor(Menu menu, int color) {
         for(int i=0; i<menu.size(); i++){
             Drawable drawable = menu.getItem(i).getIcon();

@@ -10,8 +10,8 @@
         app:actionViewClass="android.support.v7.widget.SearchView"/>
 
     <item
-        android:id="@+id/me_existencia"
-        android:title="Existencia"
+        android:id="@+id/me_listaCompleta"
+        android:title="Lista Completa"
         app:showAsAction="never"/>
 
     <item

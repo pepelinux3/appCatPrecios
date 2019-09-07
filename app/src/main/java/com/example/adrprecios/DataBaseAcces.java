@@ -16,6 +16,7 @@ public class DataBaseAcces {
 
     ArrayList <GroupVo> grupos;
     ArrayList <PriceVo> Item;
+    ArrayList <PriceVo> ItemFull;
 
     Cursor c = null;
 
@@ -110,6 +111,25 @@ public class DataBaseAcces {
         }
 
         return Item;
+    }
+
+    public ArrayList<PriceVo> getPriceItemFull(){
+        c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
+                            "       lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
+                            "  FROM articulos, listapreciosdetalle, subgrupos "+
+                            " WHERE lisd_art_clave = art_clave "+
+                            "   and art_subg_clave = subg_clave "+
+                            "   and art_emp_clave = 2 "+
+                            "   and lisd_lise_clave = 3 "+
+                            " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
+
+        ItemFull = new ArrayList<PriceVo>();
+
+        while (c.moveToNext()){
+            ItemFull.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
+        }
+
+        return ItemFull;
     }
 
 }

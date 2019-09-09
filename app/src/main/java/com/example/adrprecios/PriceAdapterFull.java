@@ -5,18 +5,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PriceAdapterFull
-        extends RecyclerView.Adapter<PriceAdapterFull.ViewHolderFull> {
+        extends RecyclerView.Adapter<PriceAdapterFull.ViewHolderFull>
+        implements Filterable {
 
-    ArrayList<PriceVo> listItemFull;
+    List<PriceVo> listItemFull;
+    List<PriceVo> listItemFullComplet;
 
     public PriceAdapterFull(ArrayList<PriceVo> listItemFull){
         this.listItemFull = listItemFull;
+        listItemFullComplet = new ArrayList<>(listItemFull);
     }
 
     @NonNull
@@ -46,6 +52,42 @@ public class PriceAdapterFull
     public int getItemCount() {
         return listItemFull.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return listFilterPriceFull;
+    }
+
+    private  Filter listFilterPriceFull = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<PriceVo> filteredList = new ArrayList<>();
+
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(listItemFullComplet);
+            } else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for(PriceVo onePrice: listItemFullComplet){
+                    if(onePrice.getDesItem().toLowerCase().contains(filterPattern)){
+                        filteredList.add(onePrice);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            listItemFull.clear();
+            listItemFull.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class ViewHolderFull extends RecyclerView.ViewHolder {
         TextView tvFullNoArticulo;

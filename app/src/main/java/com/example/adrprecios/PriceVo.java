@@ -6,10 +6,14 @@ public class PriceVo {
     private String noItem;
     private String desItem;
     private String dateItem;
+    private String gruItem;
+    private String subgItem;
     private float priItem;
 
-    public PriceVo(int idItem, String noItem, String desItem, String dateItem, float priItem) {
+    public PriceVo(int idItem, String gruItem, String subgItem, String noItem, String desItem, String dateItem, float priItem) {
         this.idItem = idItem;
+        this.gruItem = gruItem;
+        this.subgItem = subgItem;
         this.noItem = noItem;
         this.desItem = desItem;
         this.dateItem = dateItem;
@@ -19,6 +23,18 @@ public class PriceVo {
     public int getIdItem() { return idItem; }
     public void setIdItem(int idItem) {
         this.idItem = idItem;
+    }
+
+    public String getGruItem() {
+        return gruItem;
+    }
+    public void setGruItem(String gruItem) { this.gruItem = gruItem; }
+
+    public String getSubgItem() {
+        return subgItem;
+    }
+    public void setSubgItem(String subgItem) {
+        this.subgItem = subgItem;
     }
 
     public String getNoItem() {

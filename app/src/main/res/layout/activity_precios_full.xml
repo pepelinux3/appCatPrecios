@@ -8,6 +8,10 @@
     android:background="#202732"
     tools:context=".PreciosFullActivity">
 
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_pricefull_id"
         android:layout_width="match_parent"

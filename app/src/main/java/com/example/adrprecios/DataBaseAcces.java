@@ -103,22 +103,23 @@ public class DataBaseAcces {
 
         while (c.moveToNext()){
             if(clave_subg != c.getInt(5)){
-                Item.add(new PriceVo(0, c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
+                Item.add(new PriceVo(0, "", "", c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
                 clave_subg = c.getInt(5);
             }
 
-            Item.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
+            Item.add(new PriceVo(c.getInt(0), "", "", c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
         }
 
         return Item;
     }
 
     public ArrayList<PriceVo> getPriceItemFull(){
-        c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
-                            "       lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
-                            "  FROM articulos, listapreciosdetalle, subgrupos "+
+        c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
+                            "       art_nombrelargo, lisd_fecha, lisd_precio "+
+                            "  FROM articulos, listapreciosdetalle, subgrupos, grupos "+
                             " WHERE lisd_art_clave = art_clave "+
                             "   and art_subg_clave = subg_clave "+
+                            "   and subg_gru_clave = gru_clave "+
                             "   and art_emp_clave = 2 "+
                             "   and lisd_lise_clave = 3 "+
                             " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
@@ -126,7 +127,7 @@ public class DataBaseAcces {
         ItemFull = new ArrayList<PriceVo>();
 
         while (c.moveToNext()){
-            ItemFull.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
+            ItemFull.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5),   c.getFloat(6)));
         }
 
         return ItemFull;

@@ -1,13 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/priceFull_NoArt"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bground_price_full"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/priceFull_Subg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:text="Subgrupo" />
+
+                <TextView
+                    android:id="@+id/priceFull_Separa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:textColor="#E91E63"
+                    android:textSize="18sp"
+                    android:text="  -  " />
+
+                <TextView
+                    android:id="@+id/priceFull_NoArt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:text="No.Articulo" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/priceFull_Grupo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grupo"
+                    android:textColor="#C5BCBC"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/priceFull_Date"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:text="Date"
+                        android:textColor="#C5BCBC"
+                        android:layout_marginRight="4dp"
+                        android:textSize="13sp" />
+
+                    <!--- Un comentario de una sola línea -->
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/priceFull_Desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Descripcion"
+                    android:textColor="#C5BCBC"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_marginBottom="9dp"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/monedaView"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:gravity="end"
+                        app:srcCompat="@drawable/moneda" />
+
+                    <TextView
+                        android:id="@+id/priceFull_Price"
+                        android:layout_width="72dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:text="price"
+                        android:textColor="#4CAF50"
+                        android:layout_marginRight="4dp"
+                        android:textSize="15sp" />
+
+                    <!--- Un comentario de una sola línea -->
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
 </LinearLayout>

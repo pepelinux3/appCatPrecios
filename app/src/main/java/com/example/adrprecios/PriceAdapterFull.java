@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PriceAdapterFull
@@ -22,12 +23,23 @@ public class PriceAdapterFull
     @Override
     public ViewHolderFull onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.detail_price_full, null, false);
+
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(lp);
+
         return new ViewHolderFull(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderFull holder, int i) {
-        holder.tvNoArticulo.setText(listItemFull.get(i).getNoItem());
+        DecimalFormat precision = new DecimalFormat("#,##0.00");
+
+        holder.tvFullNoArticulo.setText(listItemFull.get(i).getNoItem());
+        holder.tvFullGrupo.setText(listItemFull.get(i).getGruItem());
+        holder.tvFullSubGrupo.setText(listItemFull.get(i).getSubgItem());
+        holder.tvFullDescripcion.setText(listItemFull.get(i).getDesItem());
+        holder.tvFullDate.setText(listItemFull.get(i).getDateItem());
+        holder.tvFullPrice.setText(precision.format(listItemFull.get(i).getPriItem()));
     }
 
     @Override
@@ -36,12 +48,22 @@ public class PriceAdapterFull
     }
 
     public class ViewHolderFull extends RecyclerView.ViewHolder {
-        TextView tvNoArticulo;
+        TextView tvFullNoArticulo;
+        TextView tvFullGrupo;
+        TextView tvFullSubGrupo;
+        TextView tvFullDescripcion;
+        TextView tvFullDate;
+        TextView tvFullPrice;
 
         public ViewHolderFull(@NonNull View itemView) {
             super(itemView);
 
-            tvNoArticulo = (TextView)itemView.findViewById(R.id.priceFull_NoArt);
+            tvFullNoArticulo = (TextView)itemView.findViewById(R.id.priceFull_NoArt);
+            tvFullGrupo = (TextView)itemView.findViewById(R.id.priceFull_Grupo);
+            tvFullSubGrupo = (TextView)itemView.findViewById(R.id.priceFull_Subg);
+            tvFullDescripcion = (TextView)itemView.findViewById(R.id.priceFull_Desc);
+            tvFullDate = (TextView)itemView.findViewById(R.id.priceFull_Date);
+            tvFullPrice = (TextView)itemView.findViewById(R.id.priceFull_Price);
         }
     }
 }

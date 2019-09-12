@@ -69,8 +69,11 @@ public class PriceAdapterFull
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for(PriceVo onePrice: listItemFullComplet){
-                    if(onePrice.getDesItem().toLowerCase().contains(filterPattern)){
+                    if(onePrice.getNoItem().toLowerCase().contains(filterPattern)){
                         filteredList.add(onePrice);
+                    }else
+                        if(onePrice.getDesItem().toLowerCase().contains(filterPattern)){
+                            filteredList.add(onePrice);
                     }
                 }
             }

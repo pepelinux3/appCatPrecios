@@ -66,7 +66,6 @@ public class PreciosActivity extends AppCompatActivity {
         toolbar2 = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar2);
 
-      //  String id = getIntent().getStringExtra("groupId");
         String tittle = getIntent().getStringExtra("groupTittle");
 
         getSupportActionBar().setTitle(tittle);
@@ -82,11 +81,12 @@ public class PreciosActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.menu_search, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
 
         return super.onCreateOptionsMenu(menu);
     }
+
 
     private void menuIconColor(Menu menu, int color) {
         for(int i=0; i<menu.size(); i++){

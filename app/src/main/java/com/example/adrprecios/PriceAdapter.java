@@ -39,7 +39,6 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
 
         holder.tvNoArticulo.setText(listItems.get(i).getNoItem());
 
-
         if(listItems.get(i).getIdItem() == 0){
             holder.tvPrArticulo.setText("");
             holder.ivPesos.setImageResource(0);

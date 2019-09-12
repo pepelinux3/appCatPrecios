@@ -5,20 +5,23 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-import java.util.List;
 
-public class PreciosFullActivity extends AppCompatActivity {
+public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     private RecyclerView recyclerPricesFull;
     private Toolbar toolbarPriceFull;
     private PriceAdapterFull priceAdapterFull;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class PreciosFullActivity extends AppCompatActivity {
         databaseAcces.close();
         setUpToolBar();
     }
+
 
     private void setUpToolBar() {
         toolbarPriceFull = findViewById(R.id.toolbar);
@@ -76,6 +80,30 @@ public class PreciosFullActivity extends AppCompatActivity {
                 drawable.mutate();
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
             }
+        }
+    }
+
+    public void showPopup(View view){
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.popup_prices);
+        popup.show();
+    }
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.it_imagen:
+                Toast.makeText(this, "ver imagen", Toast.LENGTH_SHORT).show();
+                return  true;
+
+            case R.id.it_existencia:
+                Toast.makeText(this, "ver existencia", Toast.LENGTH_SHORT).show();
+                 return true;
+            default:
+                return false;
+
         }
     }
 }

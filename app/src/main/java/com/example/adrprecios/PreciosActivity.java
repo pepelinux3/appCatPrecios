@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,14 +40,6 @@ public class PreciosActivity extends AppCompatActivity {
 
         databaseAcces.close();
 
-        adapter.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Ver imagen", Toast.LENGTH_SHORT).show();
-                accesActivityImagen();
-            }
-        });
     }
 
     private void accesActivityImagen (){
@@ -96,6 +89,22 @@ public class PreciosActivity extends AppCompatActivity {
                 drawable.mutate();
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
             }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case 121:
+                Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case 122:
+                Toast.makeText(this, "Ver Imagen", Toast.LENGTH_SHORT).show();
+                return true;
+
+            default: return super.onContextItemSelected(item);
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.adrprecios;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,9 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 
 
-public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDatos> implements View.OnClickListener{
+public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDatos> {
 
     ArrayList<PriceVo> listItems;
-    private View.OnClickListener listener;
 
     public PriceAdapter(ArrayList<PriceVo> listItems){
         this.listItems = listItems;
@@ -25,7 +26,6 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
     @Override
     public ViewHolderDatos onCreateViewHolder(@NonNull ViewGroup viewItem, int i) {
         View view = LayoutInflater.from(viewItem.getContext()).inflate(R.layout.detail_price,null, false);
-        view.setOnClickListener(this);
 
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
@@ -61,24 +61,15 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
         return listItems.size();
     }
 
-    public void setOnClickListener(View.OnClickListener listener){
-        this.listener = listener;
-    }
 
-    @Override
-    public void onClick(View v) {
-        if(listener != null){
-            listener.onClick(v);
-        }
-    }
-
-    public class ViewHolderDatos extends RecyclerView.ViewHolder {
+    public class ViewHolderDatos extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
         TextView tvNoArticulo;
         TextView tvDeArticulo;
         TextView tvSuArticulo;
         TextView tvPrArticulo;
         ImageView ivPesos;
+        CardView cardView;
 
         public ViewHolderDatos(@NonNull View itemView) {
             super(itemView);
@@ -88,8 +79,15 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
             tvPrArticulo = (TextView)itemView.findViewById(R.id.priceArt);
 
             ivPesos = (ImageView)itemView.findViewById(R.id.monedaView);
+            cardView = (CardView)itemView.findViewById(R.id.id_cardPrice);
+            cardView.setOnCreateContextMenuListener(this);
         }
 
 
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(this.getAdapterPosition(), 121, 0, "Existencia");
+            menu.add(this.getAdapterPosition(), 121, 0, "Imagen");
+        }
     }
 }

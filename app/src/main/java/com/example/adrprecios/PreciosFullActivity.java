@@ -22,7 +22,6 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
     private Toolbar toolbarPriceFull;
     private PriceAdapterFull priceAdapterFull;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +39,7 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
         databaseAcces.close();
         setUpToolBar();
     }
+
 
 
     private void setUpToolBar() {
@@ -90,7 +90,6 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
         popup.show();
     }
 
-
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -101,9 +100,9 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
             case R.id.it_existencia:
                 Toast.makeText(this, "ver existencia", Toast.LENGTH_SHORT).show();
                  return true;
+
             default:
                 return false;
-
         }
     }
 }

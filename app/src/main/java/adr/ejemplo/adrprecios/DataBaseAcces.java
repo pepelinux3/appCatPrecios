@@ -1,10 +1,12 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.adrprecios.R;
 
 import java.util.ArrayList;
 

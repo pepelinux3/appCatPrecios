@@ -1,4 +1,4 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -11,8 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
+
+import com.example.adrprecios.R;
 
 public class PreciosActivity extends AppCompatActivity {
 
@@ -102,6 +103,7 @@ public class PreciosActivity extends AppCompatActivity {
 
             case 122:
                 Toast.makeText(this, "Ver Imagen", Toast.LENGTH_SHORT).show();
+                accesActivityImagen ();
                 return true;
 
             default: return super.onContextItemSelected(item);

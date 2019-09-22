@@ -1,4 +1,4 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.adrprecios.R;
 
 import java.util.ArrayList;
 import java.text.DecimalFormat;
@@ -87,7 +89,7 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(this.getAdapterPosition(), 121, 0, "Existencia");
-            menu.add(this.getAdapterPosition(), 121, 0, "Imagen");
+            menu.add(this.getAdapterPosition(), 122, 0, "Imagen");
         }
     }
 }

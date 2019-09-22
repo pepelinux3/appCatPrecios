@@ -1,4 +1,4 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.adrprecios.R;
 
 import java.util.ArrayList;
 import java.util.List;

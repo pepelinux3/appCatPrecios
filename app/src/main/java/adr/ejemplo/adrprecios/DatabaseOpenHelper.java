@@ -1,4 +1,4 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
+
+import com.example.adrprecios.R;
 
 public class GroupActivity extends AppCompatActivity {
 

@@ -1,5 +1,6 @@
-package com.example.adrprecios;
+package adr.ejemplo.adrprecios;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.adrprecios.R;
 
 
 public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
@@ -40,7 +43,10 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
         setUpToolBar();
     }
 
-
+    private void accesActivityImagen (){
+        Intent activityImagen = new Intent(this, ImagenActivity.class);
+        startActivity(activityImagen);
+    }
 
     private void setUpToolBar() {
         toolbarPriceFull = findViewById(R.id.toolbar);
@@ -95,6 +101,7 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
         switch (menuItem.getItemId()){
             case R.id.it_imagen:
                 Toast.makeText(this, "ver imagen", Toast.LENGTH_SHORT).show();
+                accesActivityImagen ();
                 return  true;
 
             case R.id.it_existencia:

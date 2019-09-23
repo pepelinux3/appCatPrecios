@@ -16,11 +16,11 @@
 
         <ImageView
             android:id="@+id/idImagen"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
             app:srcCompat="@mipmap/ic_launcher" />
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="Nombre"
             android:textColor="#ffffff"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView

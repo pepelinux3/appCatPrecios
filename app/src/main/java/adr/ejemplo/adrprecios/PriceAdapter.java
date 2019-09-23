@@ -7,6 +7,8 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,14 +16,19 @@ import com.example.adrprecios.R;
 
 import java.util.ArrayList;
 import java.text.DecimalFormat;
+import java.util.List;
 
 
-public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDatos> {
+public class PriceAdapter
+        extends RecyclerView.Adapter<PriceAdapter.ViewHolderDatos>
+        implements Filterable {
 
-    ArrayList<PriceVo> listItems;
+    List<PriceVo> listItems;
+    List<PriceVo> listItemComplet;
 
     public PriceAdapter(ArrayList<PriceVo> listItems){
         this.listItems = listItems;
+        listItemComplet = new ArrayList<>(listItems);
     }
 
     @NonNull
@@ -46,7 +53,7 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
             holder.ivPesos.setImageResource(0);
             holder.tvNoArticulo.setText("");
             holder.tvSuArticulo.setText(listItems.get(i).getDesItem());
-            holder.tvSuArticulo.setTextSize(20);
+            holder.tvSuArticulo.setTextSize(17);
             holder.tvDeArticulo.setText("");
         }
         else{
@@ -63,6 +70,44 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolderDa
         return listItems.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return listFilterPrice;
+    }
+
+    private Filter listFilterPrice = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<PriceVo> filteredList = new ArrayList<>();
+
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(listItemComplet);
+            } else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for(PriceVo onePrice: listItemComplet){
+                    if(onePrice.getNoItem().toLowerCase().contains(filterPattern)){
+                        filteredList.add(onePrice);
+                    }else
+                    if(onePrice.getDesItem().toLowerCase().contains(filterPattern)){
+                        filteredList.add(onePrice);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            listItems.clear();
+            listItems.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class ViewHolderDatos extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 

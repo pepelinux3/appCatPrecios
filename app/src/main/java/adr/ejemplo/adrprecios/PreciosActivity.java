@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +19,8 @@ import com.example.adrprecios.R;
 public class PreciosActivity extends AppCompatActivity {
 
     private Toolbar toolbar2;
-    RecyclerView recycler2;
+    private RecyclerView recycler2;
+    private PriceAdapter priceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,8 @@ public class PreciosActivity extends AppCompatActivity {
 
         String id = getIntent().getStringExtra("groupId");
 
-        PriceAdapter adapter = new PriceAdapter(databaseAcces.getPriceItem(id));
-        recycler2.setAdapter(adapter);
+        priceAdapter  = new PriceAdapter(databaseAcces.getPriceItem(id));
+        recycler2.setAdapter(priceAdapter);
 
         databaseAcces.close();
 
@@ -75,8 +77,24 @@ public class PreciosActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
+        inflater.inflate(R.menu.menu_search_price, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
+
+        MenuItem searchItem = menu.findItem(R.id.search_price);
+        SearchView searchView = (SearchView)searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                priceAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }

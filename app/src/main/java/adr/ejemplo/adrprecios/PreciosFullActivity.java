@@ -57,7 +57,7 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
+        inflater.inflate(R.menu.menu_search_pricefull, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
 
         MenuItem searchItem = menu.findItem(R.id.search_full);

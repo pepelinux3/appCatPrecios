@@ -10,6 +10,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -90,9 +91,10 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
     }
 
     public void showPopup(View view){
-        PopupMenu popup = new PopupMenu(this, view);
+        PopupMenu popup = new PopupMenu(this, view, Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
         popup.setOnMenuItemClickListener(this);
         popup.inflate(R.menu.popup_prices);
+        popup.setGravity(Gravity.BOTTOM);
         popup.show();
     }
 

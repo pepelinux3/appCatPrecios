@@ -30,6 +30,10 @@ public class PreciosActivity extends AppCompatActivity {
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
 
+        fillRecyclerView();
+    }
+
+    private void fillRecyclerView(){
         recycler2 = (RecyclerView)findViewById(R.id.recycler_price_id);
         recycler2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -42,7 +46,6 @@ public class PreciosActivity extends AppCompatActivity {
         recycler2.setAdapter(priceAdapter);
 
         databaseAcces.close();
-
     }
 
     private void accesActivityImagen (){

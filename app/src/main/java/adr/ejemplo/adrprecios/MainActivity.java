@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
             if(dateJson != ""){
                 CreateKey key = new CreateKey();
-            //    Toast.makeText(this, key.turnRequest(dateJson), Toast.LENGTH_SHORT).show();
 
                 if(key.turnRequest(dateJson).equals(k)){
                     Toast.makeText(this, "Bienvenido", Toast.LENGTH_SHORT).show();

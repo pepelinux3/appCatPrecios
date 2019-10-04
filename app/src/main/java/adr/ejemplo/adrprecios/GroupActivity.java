@@ -17,10 +17,14 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
+  //   https://www.youtube.com/watch?v=FZfjWXYm80k
+
+
 public class GroupActivity extends AppCompatActivity {
 
     RecyclerView recyclerGroup;
     GruopAdapter adapter;
+    Menu menu;
     private Toolbar toolbar;
 
     @Override
@@ -90,12 +94,16 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+        this.menu = menu;
+
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.menu_group, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
+
 
         MenuItem searchGroup = menu.findItem(R.id.me_search);
         SearchView searchView = (SearchView) searchGroup.getActionView();
+        searchView.setQueryHint("Buscar...");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -105,6 +113,7 @@ public class GroupActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+               // showOverflowMenu(false);
                 adapter.getFilter().filter(newText);
                 return false;
             }
@@ -117,9 +126,11 @@ public class GroupActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.me_listaCompleta){
-            Toast.makeText(this, "Existencias de articulos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lista Completa", Toast.LENGTH_SHORT).show();
             Intent preciosFull = new Intent(this, PreciosFullActivity.class);
             startActivity(preciosFull);
+        } else{
+            Toast.makeText(this, "nadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,6 +144,12 @@ public class GroupActivity extends AppCompatActivity {
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
             }
         }
+    }
+
+    public void showOverflowMenu(boolean showMenu){
+        if(menu == null)
+            return;
+        menu.setGroupVisible(R.id.main_menu_group, showMenu);
     }
 
 }

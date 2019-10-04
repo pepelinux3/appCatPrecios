@@ -133,8 +133,8 @@ public class PriceAdapter
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(this.getAdapterPosition(), 121, 0, "Existencia");
-            menu.add(this.getAdapterPosition(), 122, 0, "Imagen");
+            menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
+            menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
         }
     }
 }

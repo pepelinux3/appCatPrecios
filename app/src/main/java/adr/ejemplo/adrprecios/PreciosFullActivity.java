@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.example.adrprecios.R;
 
 
-public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
+public class PreciosFullActivity extends AppCompatActivity {
 
     private RecyclerView recyclerPricesFull;
     private Toolbar toolbarPriceFull;
@@ -90,28 +90,19 @@ public class PreciosFullActivity extends AppCompatActivity implements PopupMenu.
         }
     }
 
-    public void showPopup(View view){
-        PopupMenu popup = new PopupMenu(this, view, Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.popup_prices);
-        popup.setGravity(Gravity.BOTTOM);
-        popup.show();
-    }
-
     @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        switch (menuItem.getItemId()){
-            case R.id.it_imagen:
-                Toast.makeText(this, "ver imagen", Toast.LENGTH_SHORT).show();
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case 1:
+                Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case 2:
+                Toast.makeText(this, "Ver Imagen", Toast.LENGTH_SHORT).show();
                 accesActivityImagen ();
-                return  true;
+                return true;
 
-            case R.id.it_existencia:
-                Toast.makeText(this, "ver existencia", Toast.LENGTH_SHORT).show();
-                 return true;
-
-            default:
-                return false;
+            default: return super.onContextItemSelected(item);
         }
     }
 }

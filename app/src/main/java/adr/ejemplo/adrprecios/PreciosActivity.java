@@ -118,11 +118,11 @@ public class PreciosActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            case 121:
+            case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
                 return true;
 
-            case 122:
+            case 2:
                 Toast.makeText(this, "Ver Imagen", Toast.LENGTH_SHORT).show();
                 accesActivityImagen ();
                 return true;

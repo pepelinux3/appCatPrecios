@@ -1,7 +1,9 @@
 package adr.ejemplo.adrprecios;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,13 +96,14 @@ public class PriceAdapterFull
         }
     };
 
-    public class ViewHolderFull extends RecyclerView.ViewHolder {
+    public class ViewHolderFull extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView tvFullNoArticulo;
         TextView tvFullGrupo;
         TextView tvFullSubGrupo;
         TextView tvFullDescripcion;
         TextView tvFullDate;
         TextView tvFullPrice;
+        CardView cardView;
 
         public ViewHolderFull(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +114,15 @@ public class PriceAdapterFull
             tvFullDescripcion = (TextView)itemView.findViewById(R.id.priceFull_Desc);
             tvFullDate = (TextView)itemView.findViewById(R.id.priceFull_Date);
             tvFullPrice = (TextView)itemView.findViewById(R.id.priceFull_Price);
+
+            cardView = (CardView)itemView.findViewById(R.id.id_cardPriceFull);
+            cardView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
+            menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
         }
     }
 }

@@ -11,11 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="adr.ejemplo.adrprecios.PreciosFullActivity"></activity>
-        <activity android:name="adr.ejemplo.adrprecios.ImagenActivity" />
-        <activity android:name="adr.ejemplo.adrprecios.PreciosActivity" />
-        <activity android:name="adr.ejemplo.adrprecios.GroupActivity" />
-        <activity android:name="adr.ejemplo.adrprecios.MainActivity">
+        <activity android:name="adr.precios.adrprecios.PreciosFullActivity"></activity>
+        <activity android:name="adr.precios.adrprecios.ImagenActivity" />
+        <activity android:name="adr.precios.adrprecios.PreciosActivity" />
+        <activity android:name="adr.precios.adrprecios.GroupActivity" />
+        <activity android:name="adr.precios.adrprecios.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

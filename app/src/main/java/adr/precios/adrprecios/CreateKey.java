@@ -1,4 +1,4 @@
-package adr.ejemplo.adrprecios;
+package adr.precios.adrprecios;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

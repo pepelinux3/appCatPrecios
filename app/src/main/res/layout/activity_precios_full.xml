@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#202732"
-    tools:context="adr.ejemplo.adrprecios.PreciosFullActivity">
+    tools:context="adr.precios.adrprecios.PreciosFullActivity">
 
     <include
         layout="@layout/toolbar"

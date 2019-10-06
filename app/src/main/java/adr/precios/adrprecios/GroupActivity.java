@@ -1,4 +1,4 @@
-package adr.ejemplo.adrprecios;
+package adr.precios.adrprecios;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -129,9 +129,8 @@ public class GroupActivity extends AppCompatActivity {
             Toast.makeText(this, "Lista Completa", Toast.LENGTH_SHORT).show();
             Intent preciosFull = new Intent(this, PreciosFullActivity.class);
             startActivity(preciosFull);
-        } else{
-            Toast.makeText(this, "nadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
         }
+
         return super.onOptionsItemSelected(item);
     }
 

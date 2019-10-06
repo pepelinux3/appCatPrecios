@@ -1,4 +1,4 @@
-package adr.ejemplo.adrprecios;
+package adr.precios.adrprecios;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

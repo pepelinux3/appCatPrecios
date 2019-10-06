@@ -1,4 +1,4 @@
-package adr.ejemplo.adrprecios;
+package adr.precios.adrprecios;
 
 public class PriceVo {
 

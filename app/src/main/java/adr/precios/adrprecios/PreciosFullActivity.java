@@ -1,4 +1,4 @@
-package adr.ejemplo.adrprecios;
+package adr.precios.adrprecios;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -16,36 +16,29 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
-public class PreciosActivity extends AppCompatActivity {
 
-    private Toolbar toolbar2;
-    private RecyclerView recycler2;
-    private PriceAdapter priceAdapter;
+public class PreciosFullActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerPricesFull;
+    private Toolbar toolbarPriceFull;
+    private PriceAdapterFull priceAdapterFull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_precios);
+        setContentView(R.layout.activity_precios_full);
 
-        setUpToolBar();
-        setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
-
-        fillRecyclerView();
-    }
-
-    private void fillRecyclerView(){
-        recycler2 = (RecyclerView)findViewById(R.id.recycler_price_id);
-        recycler2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerPricesFull = (RecyclerView)findViewById(R.id.recycler_pricefull_id);
+        recyclerPricesFull.setLayoutManager(new LinearLayoutManager(this));
 
         DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
         databaseAcces.open();
 
-        String id = getIntent().getStringExtra("groupId");
-
-        priceAdapter  = new PriceAdapter(databaseAcces.getPriceItem(id));
-        recycler2.setAdapter(priceAdapter);
+        priceAdapterFull = new PriceAdapterFull(databaseAcces.getPriceItemFull());
+        recyclerPricesFull.setAdapter(priceAdapterFull);
 
         databaseAcces.close();
+        setUpToolBar();
     }
 
     private void accesActivityImagen (){
@@ -53,37 +46,19 @@ public class PreciosActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
-    private void setUpHomeUpIconAndColor(int drawable, int color) {
-        if(getSupportActionBar() != null){
-            final Drawable icon = getResources().getDrawable(drawable);
-            icon.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(icon);
-        }
-    }
-
     private void setUpToolBar() {
-        toolbar2 = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar2);
-
-        String tittle = getIntent().getStringExtra("groupTittle");
-
-        getSupportActionBar().setTitle(tittle);
-        //showHomeUpIcon();
-    }
-
-    private void showHomeUpIcon() {
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        toolbarPriceFull = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbarPriceFull);
+        getSupportActionBar().setTitle("LISTA COMPLETA");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search_price, menu);
+        inflater.inflate(R.menu.menu_search_pricefull, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
 
-        MenuItem searchItem = menu.findItem(R.id.search_price);
+        MenuItem searchItem = menu.findItem(R.id.search_full);
         SearchView searchView = (SearchView)searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -94,7 +69,7 @@ public class PreciosActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                priceAdapter.getFilter().filter(s);
+                priceAdapterFull.getFilter().filter(s);
                 return false;
             }
         });
@@ -102,11 +77,9 @@ public class PreciosActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    private void menuIconColor(Menu menu, int color) {
+    public void menuIconColor(Menu menu, int color){
         for(int i=0; i<menu.size(); i++){
             Drawable drawable = menu.getItem(i).getIcon();
-
             if(drawable != null){
                 drawable.mutate();
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
@@ -116,7 +89,6 @@ public class PreciosActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();

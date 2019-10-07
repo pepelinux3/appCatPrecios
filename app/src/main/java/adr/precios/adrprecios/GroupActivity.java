@@ -32,10 +32,13 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grupos);
 
+        fillRecyclerView();
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
+    }
 
-        recyclerGroup = (RecyclerView)findViewById(R.id.recycler_group_id);
+    private void fillRecyclerView(){
+        recyclerGroup = findViewById(R.id.recycler_group_id);
         recyclerGroup.setLayoutManager(new LinearLayoutManager(this));
 
         final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
@@ -54,8 +57,8 @@ public class GroupActivity extends AppCompatActivity {
                         "Seleccion: "+databaseAcces.grupos.get
                                 (recyclerGroup.getChildAdapterPosition(v)).getGruNombre(), Toast.LENGTH_SHORT).show();
 
-                accessActPrices(databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruNombre().toString(),
-                                databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId());
+                accessActPrices(databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruNombre(),
+                        databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId());
             }
         });
     }

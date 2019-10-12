@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.adrprecios">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="adr.precios.adrprecios.PreciosFullActivity"></activity>
+        <activity android:name="adr.precios.adrprecios.ExistenciaActivity"
+            android:label="Existencia por Sucursal"
+            android:theme="@style/Theme.AppCompat.Dialog.Alert">
+        </activity>
+        <activity android:name="adr.precios.adrprecios.PreciosFullActivity" />
         <activity android:name="adr.precios.adrprecios.ImagenActivity" />
         <activity android:name="adr.precios.adrprecios.PreciosActivity" />
         <activity android:name="adr.precios.adrprecios.GroupActivity" />
@@ -23,5 +25,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

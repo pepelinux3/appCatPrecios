@@ -53,6 +53,11 @@ public class PreciosActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
+    private void accesActivityExistencia (){
+        Intent activityExistencia = new Intent(this, ExistenciaActivity.class);
+        startActivity(activityExistencia);
+    }
+
     private void setUpHomeUpIconAndColor(int drawable, int color) {
         if(getSupportActionBar() != null){
             final Drawable icon = getResources().getDrawable(drawable);
@@ -120,6 +125,7 @@ public class PreciosActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
+                accesActivityExistencia();
                 return true;
 
             case 2:

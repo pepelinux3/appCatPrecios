@@ -46,6 +46,11 @@ public class PreciosFullActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
+    private void accesActivityExistencia (){
+        Intent activityExistencia = new Intent(this, ExistenciaActivity.class);
+        startActivity(activityExistencia);
+    }
+
     private void setUpToolBar() {
         toolbarPriceFull = findViewById(R.id.toolbar);
         setSupportActionBar(toolbarPriceFull);
@@ -92,6 +97,7 @@ public class PreciosFullActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
+                accesActivityExistencia ();
                 return true;
 
             case 2:

@@ -96,7 +96,9 @@ public class PriceAdapterFull
         }
     };
 
-    public class ViewHolderFull extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    //public class ViewHolderFull extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+
+    public class ViewHolderFull extends RecyclerView.ViewHolder {
         TextView tvFullNoArticulo;
         TextView tvFullGrupo;
         TextView tvFullSubGrupo;
@@ -116,13 +118,13 @@ public class PriceAdapterFull
             tvFullPrice = (TextView)itemView.findViewById(R.id.priceFull_Price);
 
             cardView = (CardView)itemView.findViewById(R.id.id_cardPriceFull);
-            cardView.setOnCreateContextMenuListener(this);
+            //cardView.setOnCreateContextMenuListener(this);
         }
-
+    /**
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
             menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
-        }
+        }    **/
     }
 }

@@ -44,7 +44,8 @@ public class GroupActivity extends AppCompatActivity {
         final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
         databaseAcces.open();
 
-        adapter = new GruopAdapter(databaseAcces.getGrupos());
+        String idbranch1 = getIntent().getStringExtra("noBranch");
+        adapter = new GruopAdapter(databaseAcces.getGrupos(idbranch1));
         recyclerGroup.setAdapter(adapter);
 
         databaseAcces.close();
@@ -53,21 +54,24 @@ public class GroupActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
+                String idbranch2 = getIntent().getStringExtra("noBranch");
                 Toast.makeText(getApplicationContext(),
                         "Seleccion: "+databaseAcces.grupos.get
                                 (recyclerGroup.getChildAdapterPosition(v)).getGruNombre(), Toast.LENGTH_SHORT).show();
 
                 accessActPrices(databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruNombre(),
-                        databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId());
+                        databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId(), idbranch2);
             }
         });
     }
 
-    private void accessActPrices(String tittle, int idGroup){
+    private void accessActPrices(String tittle, int idGroup, String idBranch){
         Intent actPrecios = new Intent(this, PreciosActivity.class);
 
         actPrecios.putExtra("groupId", idGroup+"");
         actPrecios.putExtra("groupTittle", tittle);
+        actPrecios.putExtra("branchId", idBranch);
         startActivity(actPrecios);
     }
 

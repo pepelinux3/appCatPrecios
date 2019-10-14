@@ -109,7 +109,8 @@ public class PriceAdapter
         }
     };
 
-    public class ViewHolderDatos extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+   // public class ViewHolderDatos extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+        public class ViewHolderDatos extends RecyclerView.ViewHolder {
 
         TextView tvNoArticulo;
         TextView tvDeArticulo;
@@ -127,14 +128,14 @@ public class PriceAdapter
 
             ivPesos = (ImageView)itemView.findViewById(R.id.monedaView);
             cardView = (CardView)itemView.findViewById(R.id.id_cardPrice);
-            cardView.setOnCreateContextMenuListener(this);
+          //  cardView.setOnCreateContextMenuListener(this);
         }
 
 
-        @Override
+    /**    @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
             menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
-        }
+        }     **/
     }
 }

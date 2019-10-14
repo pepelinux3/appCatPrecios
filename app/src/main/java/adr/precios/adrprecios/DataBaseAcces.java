@@ -54,8 +54,8 @@ public class DataBaseAcces {
     }
 
     // ******************************************************************************************************************
-    public String getLogin(String usu, String pass) {
-        c = db.rawQuery("SELECT usu_password FROM usuarios " +
+    public String getLoginBranch(String usu, String pass) {
+        c = db.rawQuery("SELECT usu_suc_clave FROM usuarios " +
                 "WHERE usu_login = '" + usu + "'" +
                 "  and usu_password = '" + pass + "'", new String[]{});
 
@@ -70,8 +70,12 @@ public class DataBaseAcces {
     }
 
     // *****************************************************************************************************************
-    public ArrayList<GroupVo> getGrupos(){
-        c = db.rawQuery("SELECT gru_clave, gru_nombre FROM grupos WHERE gru_status = 1 and gru_emp_clave = 2 ORDER BY gru_nombre", new String[]{});
+    public ArrayList<GroupVo> getGrupos(String idBranch){
+        c = db.rawQuery("SELECT gru_clave, gru_nombre FROM grupos, empresas, sucursales " +
+                "             WHERE gru_emp_clave = emp_clave " +
+                "               and suc_emp_clave = emp_clave" +
+                "               and gru_status = 1 and suc_clave = "+idBranch +
+                "             ORDER BY gru_nombre", new String[]{});
 
         grupos = new ArrayList<GroupVo>();
 
@@ -89,17 +93,20 @@ public class DataBaseAcces {
 
     // *****************************************************************************************************************
 
-    public ArrayList<PriceVo> getPriceItem(String idGrupo){
+    public ArrayList<PriceVo> getPriceItem(String idGrupo, String idBranch){
         int clave_subg = 0;
         c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
                              "      lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
-                             " FROM articulos, listapreciosdetalle, subgrupos "+
-                             "WHERE lisd_art_clave = art_clave "+
-                               "and art_subg_clave = subg_clave "+
-                               "and art_emp_clave = 2 "+
-                               "and lisd_lise_clave = 3 "+
-                               "and subg_gru_clave = "+idGrupo+" "+
-                             "ORDER BY subg_nombre, art_clavearticulo", new String[]{});
+                             " FROM articulos, listapreciosdetalle, subgrupos, " +
+                             "      sucursales, listapreciosEncabezado "+
+                             " WHERE lisd_art_clave = art_clave "+
+                             "   and lisd_lise_clave = lise_clave"+
+                             "   and art_subg_clave = subg_clave "+
+                             "   and suc_emp_clave = art_emp_clave"+
+                             "   and suc_lise_clave = lise_clave" +
+                             "   and suc_clave = "+idBranch+
+                             "   and subg_gru_clave = "+idGrupo+" "+
+                             " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
         Item = new ArrayList<PriceVo>();
 

@@ -40,9 +40,10 @@ public class PreciosActivity extends AppCompatActivity {
         DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
         databaseAcces.open();
 
-        String id = getIntent().getStringExtra("groupId");
+        String idGroup = getIntent().getStringExtra("groupId");
+        String idBranch = getIntent().getStringExtra("branchId");
 
-        priceAdapter  = new PriceAdapter(databaseAcces.getPriceItem(id));
+        priceAdapter  = new PriceAdapter(databaseAcces.getPriceItem(idGroup, idBranch));
         recycler2.setAdapter(priceAdapter);
 
         databaseAcces.close();

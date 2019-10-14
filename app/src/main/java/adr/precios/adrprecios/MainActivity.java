@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         String p = edPass.getText().toString();
         String k = edKey.getText().toString();
 
-        String acceso = databaseAcces.getLogin(u, p);
+        String branchAcces = databaseAcces.getLoginBranch(u, p);
 
-        if(acceso.isEmpty()){
+        if(branchAcces.isEmpty()){
             Toast.makeText(this, "Usuario no Existe", Toast.LENGTH_SHORT).show();
         }
         else{
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 CreateKey key = new CreateKey();
 
                 if(key.turnRequest(dateJson).equals(k)){
-                    Toast.makeText(this, "Bienvenido", Toast.LENGTH_SHORT).show();
-                    entraGrupos();
+                    Toast.makeText(this, "Bienvenido ", Toast.LENGTH_SHORT).show();
+                    entraGrupos(branchAcces);
                 }
                 else{
                     Toast.makeText(this, "Llave Incorrecta", Toast.LENGTH_SHORT).show();
@@ -72,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
         databaseAcces.close();
     }
 
-    public void entraGrupos() {
+    public void entraGrupos(String idBranch) {
         Intent act_grupos =  new Intent(this, GroupActivity.class);
+
+        act_grupos.putExtra("noBranch", idBranch);
         startActivity(act_grupos);
     }
 

@@ -134,7 +134,11 @@ public class GroupActivity extends AppCompatActivity {
 
         if(id == R.id.me_listaCompleta){
             Toast.makeText(this, "Lista Completa", Toast.LENGTH_SHORT).show();
+
+            String idbranch3 = getIntent().getStringExtra("noBranch");
+
             Intent preciosFull = new Intent(this, PreciosFullActivity.class);
+            preciosFull.putExtra("branchId", idbranch3);
             startActivity(preciosFull);
         }
 

@@ -122,15 +122,18 @@ public class DataBaseAcces {
         return Item;
     }
 
-    public ArrayList<PriceVo> getPriceItemFull(){
+    public ArrayList<PriceVo> getPriceItemFull(String idBranch){
         c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
                             "       art_nombrelargo, lisd_fecha, lisd_precio "+
-                            "  FROM articulos, listapreciosdetalle, subgrupos, grupos "+
+                            "  FROM articulos, listapreciosdetalle, subgrupos, grupos, "+
+                            "       listapreciosEncabezado, sucursales"+
                             " WHERE lisd_art_clave = art_clave "+
                             "   and art_subg_clave = subg_clave "+
                             "   and subg_gru_clave = gru_clave "+
-                            "   and art_emp_clave = 2 "+
-                            "   and lisd_lise_clave = 3 "+
+                            "   and suc_lise_clave = lise_clave"+
+                            "   and art_emp_clave = suc_emp_clave "+
+                            "   and lisd_lise_clave = lise_clave"+
+                            "   and suc_clave = "+idBranch+
                             " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
         ItemFull = new ArrayList<PriceVo>();

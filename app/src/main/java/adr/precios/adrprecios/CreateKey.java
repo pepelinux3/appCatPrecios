@@ -22,7 +22,7 @@ public class CreateKey {
 
             int resultado = ((Integer.parseInt(dateFormat))*6)/3;
             String hexa = Integer.toHexString(resultado + (numDay * 7));
-            cutResqJson = hexa.subSequence(0, 6).toString();
+            cutResqJson = hexa.subSequence(0, 5).toString();
 
         } catch (ParseException e) {
             e.printStackTrace();

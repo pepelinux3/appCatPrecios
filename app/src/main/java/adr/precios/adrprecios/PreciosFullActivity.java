@@ -34,7 +34,9 @@ public class PreciosFullActivity extends AppCompatActivity {
         DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
         databaseAcces.open();
 
-        priceAdapterFull = new PriceAdapterFull(databaseAcces.getPriceItemFull());
+        String idBranch = getIntent().getStringExtra("branchId");
+
+        priceAdapterFull = new PriceAdapterFull(databaseAcces.getPriceItemFull(idBranch));
         recyclerPricesFull.setAdapter(priceAdapterFull);
 
         databaseAcces.close();

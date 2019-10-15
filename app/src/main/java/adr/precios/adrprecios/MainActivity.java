@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dateJson = "";
-                        Toast.makeText(MainActivity.this, "No hay acceso a Intener ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "No hay acceso a Internet ", Toast.LENGTH_LONG).show();
                     }
                 });
 

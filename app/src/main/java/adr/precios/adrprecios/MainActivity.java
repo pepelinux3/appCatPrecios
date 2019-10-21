@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText edPass;
     private EditText edKey;
 
+    private DBHelper dbHelper;
+
     private RequestQueue queue;
     private String dateJson;
 
@@ -37,19 +39,25 @@ public class MainActivity extends AppCompatActivity {
         edPass = findViewById(R.id.txt_pass);
         edKey = findViewById(R.id.txt_key);
 
+        dbHelper = new DBHelper(getApplicationContext());
+        dbHelper.createDatabase();
+
         queue = Volley.newRequestQueue(this);
         obtenerDatosVolley();
     }
 
     public void query(View view) {
-        DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
-        databaseAcces.open();
+       // DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
+       // databaseAcces.open();
+
+       // dbHelper = new DbHelper(getApplicationContext());
+       // dbHelper.createDatabase();
 
         String u = edUser.getText().toString();
         String p = edPass.getText().toString();
         String k = edKey.getText().toString();
 
-        String branchAcces = databaseAcces.getLoginBranch(u, p);
+        String branchAcces = dbHelper.getLoginBranch(u, p);
 
         if(branchAcces.isEmpty()){
             Toast.makeText(this, "Usuario no Existe", Toast.LENGTH_SHORT).show();
@@ -69,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        databaseAcces.close();
+        dbHelper.close();
     }
 
     public void entraGrupos(String idBranch) {

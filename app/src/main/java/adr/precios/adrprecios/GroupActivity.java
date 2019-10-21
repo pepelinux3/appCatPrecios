@@ -41,14 +41,20 @@ public class GroupActivity extends AppCompatActivity {
         recyclerGroup = findViewById(R.id.recycler_group_id);
         recyclerGroup.setLayoutManager(new LinearLayoutManager(this));
 
-        final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
-        databaseAcces.open();
+       // dbHelper = new DBHelper(getApplicationContext());
+      //  dbHelper.createDatabase();
+
+        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper.openDataBase();
+
+       // final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
+       // databaseAcces.open();
 
         String idbranch1 = getIntent().getStringExtra("noBranch");
-        adapter = new GruopAdapter(databaseAcces.getGrupos(idbranch1));
+        adapter = new GruopAdapter(dbHelper.getGrupos(idbranch1));
         recyclerGroup.setAdapter(adapter);
 
-        databaseAcces.close();
+        dbHelper.close();
 
         adapter.setOnClickListener(new View.OnClickListener(){
 
@@ -57,11 +63,11 @@ public class GroupActivity extends AppCompatActivity {
 
                 String idbranch2 = getIntent().getStringExtra("noBranch");
                 Toast.makeText(getApplicationContext(),
-                        "Seleccion: "+databaseAcces.grupos.get
+                        "Seleccion: "+dbHelper.grupos.get
                                 (recyclerGroup.getChildAdapterPosition(v)).getGruNombre(), Toast.LENGTH_SHORT).show();
 
-                accessActPrices(databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruNombre(),
-                        databaseAcces.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId(), idbranch2);
+                accessActPrices(dbHelper.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruNombre(),
+                        dbHelper.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId(), idbranch2);
             }
         });
     }
@@ -106,7 +112,6 @@ public class GroupActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_group, menu);
         menuIconColor(menu, R.color.colorWhiteApp);
-
 
         MenuItem searchGroup = menu.findItem(R.id.me_search);
         SearchView searchView = (SearchView) searchGroup.getActionView();

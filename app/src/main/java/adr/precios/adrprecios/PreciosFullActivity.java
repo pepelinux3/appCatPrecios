@@ -31,15 +31,18 @@ public class PreciosFullActivity extends AppCompatActivity {
         recyclerPricesFull = (RecyclerView)findViewById(R.id.recycler_pricefull_id);
         recyclerPricesFull.setLayoutManager(new LinearLayoutManager(this));
 
-        DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
-        databaseAcces.open();
+       //  DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
+       //  databaseAcces.open();
+
+        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper.openDataBase();
 
         String idBranch = getIntent().getStringExtra("branchId");
 
-        priceAdapterFull = new PriceAdapterFull(databaseAcces.getPriceItemFull(idBranch));
+        priceAdapterFull = new PriceAdapterFull(dbHelper.getPriceItemFull(idBranch));
         recyclerPricesFull.setAdapter(priceAdapterFull);
 
-        databaseAcces.close();
+        dbHelper.close();
         setUpToolBar();
     }
 

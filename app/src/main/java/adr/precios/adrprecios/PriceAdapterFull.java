@@ -75,10 +75,17 @@ public class PriceAdapterFull
                 for(PriceVo onePrice: listItemFullComplet){
                     if(onePrice.getNoItem().toLowerCase().contains(filterPattern)){
                         filteredList.add(onePrice);
-                    }else
+                    }else{
                         if(onePrice.getDesItem().toLowerCase().contains(filterPattern)){
                             filteredList.add(onePrice);
+                        }
+
+                   //     if(onePrice.getDateItem().toLowerCase().contains(filterPattern)){
+                   //         filteredList.add(onePrice);
+                   //     }
+
                     }
+
                 }
             }
 

@@ -37,16 +37,19 @@ public class PreciosActivity extends AppCompatActivity {
         recycler2 = (RecyclerView)findViewById(R.id.recycler_price_id);
         recycler2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
-        databaseAcces.open();
+       // DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
+       // databaseAcces.open();
+
+        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper.openDataBase();
 
         String idGroup = getIntent().getStringExtra("groupId");
         String idBranch = getIntent().getStringExtra("branchId");
 
-        priceAdapter  = new PriceAdapter(databaseAcces.getPriceItem(idGroup, idBranch));
+        priceAdapter  = new PriceAdapter(dbHelper.getPriceItem(idGroup, idBranch));
         recycler2.setAdapter(priceAdapter);
 
-        databaseAcces.close();
+        dbHelper.close();
     }
 
     private void accesActivityImagen (){

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mCard"
+    android:layout_marginTop="3dp"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bground_group">
+
+        <TextView
+            android:id="@+id/tv_branch"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="branch"
+            android:gravity="left"
+            android:textColor="#C5BCBC"
+            android:textSize="15sp"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_exist"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="Exist"
+            android:textColor="#C5BCBC"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="Price"
+            android:textColor="#C5BCBC"
+            android:textSize="15sp"
+            android:layout_marginLeft="85dp"/>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/frag_round"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="xxx "
+        android:layout_gravity="center"
+        android:id="@+id/fragNoparte"
+        android:textColor="#08F117"
+        android:textSize="18sp"
+        android:padding="2dp">
+    </TextView>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Sucursal"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:id="@+id/fragSucursal"
+            android:textSize="15sp"
+            android:padding="5dp"
+            android:layout_alignParentLeft="true">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Exist"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:id="@+id/fragExist"
+            android:textSize="15sp"
+            android:padding="5dp"
+            android:layout_marginLeft="35dp"
+            android:layout_alignParentLeft="true">
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/fragPrecio"
+                android:layout_width="72dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:textColor="#ffffff"
+                android:gravity="right"
+                android:text="Precio"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:layout_marginRight="4dp"
+                android:textSize="15sp" />
+
+            <!--- Un comentario de una sola línea -->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_exist_id3"
+        android:layout_width="300dp"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

@@ -9,15 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="adr.precios.adrprecios.ExistenciaActivity"
-            android:label="Existencia por Sucursal"
-            android:theme="@style/Theme.AppCompat.Dialog.Alert">
-        </activity>
-        <activity android:name="adr.precios.adrprecios.PreciosFullActivity" />
-        <activity android:name="adr.precios.adrprecios.ImagenActivity" />
-        <activity android:name="adr.precios.adrprecios.PreciosActivity" />
-        <activity android:name="adr.precios.adrprecios.GroupActivity" />
-        <activity android:name="adr.precios.adrprecios.MainActivity">
+
+        <activity android:name="adr.precios.view.PriceFullActivity" />
+        <activity android:name="adr.precios.view.ImagenActivity" />
+        <activity android:name="adr.precios.view.PriceActivity"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name="adr.precios.view.GroupActivity" />
+        <activity android:name="adr.precios.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

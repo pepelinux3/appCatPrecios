@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#202732"
-    tools:context="adr.precios.adrprecios.GroupActivity">
+    tools:context="adr.precios.view.GroupActivity">
 
     <include
         layout="@layout/toolbar"

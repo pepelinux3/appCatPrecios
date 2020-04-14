@@ -5,11 +5,13 @@ public class GroupVo {
     private int gruVineta;
     private int gruId;
     private String gruNombre;
+    private int gruEmpresa;
 
-    public GroupVo(int vineta, int id, String nombre ) {
-        this.gruNombre = nombre;
-        this.gruId = id;
-        this.gruVineta = vineta;
+    public GroupVo(int gruVineta, int gruId, String gruNombre, int gruEmpresa) {
+        this.gruVineta = gruVineta;
+        this.gruId = gruId;
+        this.gruNombre = gruNombre;
+        this.gruEmpresa = gruEmpresa;
     }
 
     public int getGruVineta() {
@@ -35,6 +37,15 @@ public class GroupVo {
     }
     public void setGruNombre(String gruNombre) {
         this.gruNombre = gruNombre;
+    }
+
+    //*****************************************************************
+
+    public int getGruEmpresa() {
+        return gruEmpresa;
+    }
+    public void setGruEmpresa(int gruNombre) {
+        this.gruEmpresa = gruEmpresa;
     }
 
     //*****************************************************************

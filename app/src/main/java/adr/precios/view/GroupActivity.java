@@ -3,6 +3,7 @@ package adr.precios.view;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +19,29 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.GruopAdapter;
+import adr.precios.entities.GroupVo;
+import adr.precios.wservices.ServGenerator_AWS;
+import adr.precios.wservices.servicesGroup;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GroupActivity extends AppCompatActivity {
 
     RecyclerView recyclerGroup;
     GruopAdapter adapter;
     Menu menu;
+
+    private DBHelper dbHelper;
     private Toolbar toolbar;
 
     @Override
@@ -33,9 +49,12 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grupos);
 
-        fillRecyclerView();
+        dbHelper = new DBHelper(this);
+
+      //  getWSIdSec_Group();
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
+        fillRecyclerView();
     }
 
     CountDownTimer timer = new CountDownTimer(240 * 60 * 1000, 1000) {
@@ -61,25 +80,91 @@ public class GroupActivity extends AppCompatActivity {
         super.onPause();
         timer.start();
     }
+/*
+    private void getWSIdSec_Group(){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<ResponseBody> result_idSecGroup = service.getIdSec_LastGroup();
 
+        result_idSecGroup.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if(response.isSuccessful()){
+                        String wsIdLastGroup = response.body().string();
+                        int awsIdGroup = Integer.parseInt(wsIdLastGroup);
+
+                        dbHelper.openDataBase();
+                        int sqlIdGroup = dbHelper.getLastIdGroup();
+                        dbHelper.close();
+
+                        if(awsIdGroup > sqlIdGroup){
+                            new GetGrupos_asyn().execute();
+
+                            dbHelper.openDataBase();
+                            dbHelper.updateSecGroup(awsIdGroup);
+                            dbHelper.close();
+
+                            Toast.makeText(GroupActivity.this, "Actualizacion de grupos", Toast.LENGTH_SHORT).show();
+                        } else {
+                            fillRecyclerView();
+                        }
+                    } else {
+                        Toast.makeText(GroupActivity.this, "Falla response grupos", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "Falla secuencia Grupos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public class GetGrupos_asyn extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+            Call<List<GroupVo>> respon_gru = service.getGroupGet();
+
+            ArrayList<GroupVo> listGroup = new ArrayList<>();
+
+            try {
+                for(GroupVo gru: respon_gru.execute().body()){
+                    listGroup.add(gru);
+                }
+
+                GroupActivity.dbHelper.deleteGroups();
+                GroupActivity.dbHelper.addGroups(listGroup);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            fillRecyclerView();
+        }
+    }
+*/
     private void fillRecyclerView(){
         recyclerGroup = findViewById(R.id.recycler_group_id);
         recyclerGroup.setLayoutManager(new LinearLayoutManager(this));
 
-       // dbHelper = new DBHelper(getApplicationContext());
-      //  dbHelper.createDatabase();
-
-        final DBHelper dbHelper = new DBHelper(getApplicationContext());
         dbHelper.openDataBase();
-
-       // final DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
-       // databaseAcces.open();
-
         String idbranch1 = getIntent().getStringExtra("noBranch");
-        adapter = new GruopAdapter(dbHelper.getGrupos(idbranch1));
-        recyclerGroup.setAdapter(adapter);
-
+        ArrayList<GroupVo> listFinal = dbHelper.getGrupos(idbranch1);
         dbHelper.close();
+
+        adapter = new GruopAdapter(listFinal);
+        recyclerGroup.setAdapter(adapter);
 
         adapter.setOnClickListener(new View.OnClickListener(){
 
@@ -87,6 +172,7 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String idbranch2 = getIntent().getStringExtra("noBranch");
+
                 Toast.makeText(getApplicationContext(),
                         "Seleccion: "+dbHelper.grupos.get
                                 (recyclerGroup.getChildAdapterPosition(v)).getGruNombre(), Toast.LENGTH_SHORT).show();
@@ -105,7 +191,6 @@ public class GroupActivity extends AppCompatActivity {
         actPrecios.putExtra("branchId", idBranch);
         startActivity(actPrecios);
     }
-
 
     private void setUpHomeUpIconAndColor(int drawable, int color) {
         if(getSupportActionBar() != null){

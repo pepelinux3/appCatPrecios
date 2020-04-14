@@ -12,14 +12,14 @@ import com.example.adrprecios.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import adr.precios.entities.InventoryVo;
+import adr.precios.entities.StockBranchVo;
 
 
 public class ExistAdapter extends RecyclerView.Adapter<ExistAdapter.ViewHolderDatos> {
 
-    ArrayList<InventoryVo> listInv;
+    ArrayList<StockBranchVo> listInv;
 
-    public ExistAdapter(ArrayList<InventoryVo> listInv){
+    public ExistAdapter(ArrayList<StockBranchVo> listInv){
         this.listInv = listInv;
     }
 
@@ -40,9 +40,9 @@ public class ExistAdapter extends RecyclerView.Adapter<ExistAdapter.ViewHolderDa
     public void onBindViewHolder(@NonNull ViewHolderDatos holder, int i) {
         DecimalFormat precision = new DecimalFormat("#,##0.00");
 
-        holder.etBranch.setText(listInv.get(i).getInvIdBranch());
-        holder.etExist.setText(listInv.get(i).getInvExistencia());
-        holder.etPrice.setText(precision.format(listInv.get(i).getInvPrice()));
+        holder.etBranch.setText(listInv.get(i).getBranchName());
+        holder.etExist.setText(listInv.get(i).getBranchExist());
+        holder.etPrice.setText(precision.format(listInv.get(i).getBranchPrice()));
         // holder.foto.setImageResource(listaPersonajes.get(i).getFoto());
     }
 

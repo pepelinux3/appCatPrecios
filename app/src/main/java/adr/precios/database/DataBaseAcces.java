@@ -74,7 +74,7 @@ public class DataBaseAcces {
 
     // *****************************************************************************************************************
     public ArrayList<GroupVo> getGrupos(String idBranch){
-        c = db.rawQuery("SELECT gru_clave, gru_nombre FROM grupos, empresas, sucursales " +
+        c = db.rawQuery("SELECT gru_clave, gru_nombre, emp_clave FROM grupos, empresas, sucursales " +
                 "             WHERE gru_emp_clave = emp_clave " +
                 "               and suc_emp_clave = emp_clave" +
                 "               and gru_status = 1 and suc_clave = "+idBranch +
@@ -87,7 +87,7 @@ public class DataBaseAcces {
             if (i >= drawables.length) {
                 i = 0;
             }
-            grupos.add(new GroupVo(drawables[i], c.getInt(0), c.getString(1)));
+            grupos.add(new GroupVo(drawables[i], c.getInt(0), c.getString(1), c.getInt(2)));
             i++;
         }
 

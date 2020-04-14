@@ -117,9 +117,9 @@
         android:layout_marginTop="3dp"
         android:layout_marginEnd="3dp"
         android:layout_marginRight="5dp"
-        android:text="2020-01-18"
+        android:text="2020-03-28"
         android:textColor="#F44336"
-        android:textSize="13sp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

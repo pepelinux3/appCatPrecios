@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Adrimar2</string>
+    <string name="app_name">Adrimar</string>
     <string name="edUsuario">Usuario</string>
     <string name="edContraseña">Contraseña</string>
     <string name="edLlave">Llave</string>

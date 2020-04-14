@@ -144,7 +144,7 @@ public class PriceActivity extends AppCompatActivity {
         ContentValues registro = new ContentValues();
             registro.put("lisd_precio", 333);
 
-            int cantidad = baseDataBase.update("listapreciosdetalle", registro, "lisd_clave="+175142, null);
+            int cantidad = baseDataBase.update("listapreciosdetalle", registro, " lisd_clave="+29127, null);
             baseDataBase.close();
 
             if(cantidad == 1){
@@ -161,13 +161,17 @@ public class PriceActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Existencias", Toast.LENGTH_SHORT).show();
-                accesActivityExistencia(priceAdapter.recNoParte);
+                accesActivityExistencia(priceAdapter.getNoParteAdapter());
                 return true;
 
             case 2:
                 Toast.makeText(this, "Imagenes", Toast.LENGTH_SHORT).show();
+                DBHelper dbHelper = new DBHelper(getApplicationContext());
+                dbHelper.sqlUpdate(priceAdapter.getNoParteAdapter());
+
                 accesActivityImagen ();
-               // modificar ();
+                //modificar ();
+
                 return true;
 
             default: return super.onContextItemSelected(item);

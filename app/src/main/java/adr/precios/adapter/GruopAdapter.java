@@ -1,5 +1,6 @@
 package adr.precios.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,8 +27,9 @@ public class GruopAdapter
 
     private View.OnClickListener listener;
 
-    public GruopAdapter(ArrayList<GroupVo> groupList) {
+    public GruopAdapter( ArrayList<GroupVo> groupList) {
         this.groupList = groupList;
+
         groupListFull = new ArrayList<>(groupList);
     }
 

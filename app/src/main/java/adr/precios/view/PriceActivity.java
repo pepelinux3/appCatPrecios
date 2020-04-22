@@ -144,7 +144,7 @@ public class PriceActivity extends AppCompatActivity {
         ContentValues registro = new ContentValues();
             registro.put("lisd_precio", 333);
 
-            int cantidad = baseDataBase.update("listapreciosdetalle", registro, " lisd_clave="+29127, null);
+            int cantidad = baseDataBase.update("listapreciosdetalle", registro, " lisd_clave="+1139, null);
             baseDataBase.close();
 
             if(cantidad == 1){

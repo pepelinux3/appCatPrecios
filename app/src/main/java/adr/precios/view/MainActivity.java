@@ -12,12 +12,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import adr.precios.entities.SequenceVo;
 import adr.precios.tools.CreateKey;
 import adr.precios.database.DBHelper;
-import adr.precios.wservices.AwsGetData;
+import adr.precios.wservices.AwsAsync_Login;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Usuario no Existe", Toast.LENGTH_SHORT).show();
         }
         else{
-            AwsGetData task1 = new AwsGetData(this);
+            AwsAsync_Login task1 = new AwsAsync_Login(this);
             task1.execute(1);
         }
     }
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             CreateKey key = new CreateKey();
 
             if(key.turnRequest(json_date).equals(tv_key)){
-                AwsGetData task2 = new AwsGetData(this);
+                AwsAsync_Login task2 = new AwsAsync_Login(this);
                 task2.execute(2);
             } else{
                 Toast.makeText(MainActivity.this, "Llave Incorrecta", Toast.LENGTH_SHORT).show();
@@ -108,35 +109,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void awsResp_UpdateGroups(){
-        int awsIdGroup = awsListSeq.get(5).getTsec_update();
+        int awsUpdate_Group = awsListSeq.get(5).getTsec_update();
+        int awsFinal_Group = awsListSeq.get(5).getTsec_final();
 
         dbHelper.openDataBase();
-        dbHelper.updateSecGroup(awsIdGroup);
+        dbHelper.updateSeqUpdate(awsUpdate_Group, 6);
+        dbHelper.close();
+
+        dbHelper.openDataBase();
+        dbHelper.updateSeqFinal(awsFinal_Group, 6);
         dbHelper.close();
 
         entraGrupos(branchAcces);
-        Toast.makeText(MainActivity.this, "Actualiza base de datos WS xxxxxx", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Actualizacio de Grupos", Toast.LENGTH_SHORT).show();
+    }
+
+    public void awsResp_NewGroups(){
+        int awsFinal_Group = awsListSeq.get(5).getTsec_final();
+
+        dbHelper.openDataBase();
+        dbHelper.updateSeqFinal(awsFinal_Group, 6);
+        dbHelper.close();
+
+        entraGrupos(branchAcces);
+        Toast.makeText(MainActivity.this, "Agrega base de datos nuevos grupos", Toast.LENGTH_SHORT).show();
     }
 
     private void checkSec_aws_sql_Group(){
-        int awsIdGroup = awsListSeq.get(5).getTsec_update();
-        int sqlIdGroup = sqlListSeq.get(5).getTsec_update();
+        int awsUpdate_Group = awsListSeq.get(5).getTsec_update();
+        int sqlUpdate_Group = sqlListSeq.get(5).getTsec_update();
 
-        Toast.makeText(MainActivity.this, awsListSeq.get(5).getTsec_update()+" - "+ awsListSeq.get(5).getTsec_update()+" - "+ awsListSeq.get(5).getTsec_update()+" x", Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity.this, "awsGroup = "+awsIdGroup+"  -  "+"sqlGroup = "+sqlIdGroup, Toast.LENGTH_SHORT).show();
+        int awsFinal_IdGroup = awsListSeq.get(5).getTsec_final();
+        int sqlFinal_IdGroup = sqlListSeq.get(5).getTsec_final();
 
-        if(awsIdGroup > sqlIdGroup){
-            AwsGetData task3 = new AwsGetData(this);
+        if(awsUpdate_Group > sqlUpdate_Group){
+            AwsAsync_Login task3 = new AwsAsync_Login(this);
             task3.execute(3);
         } else {
-            entraGrupos(branchAcces);
+            if(awsFinal_IdGroup > sqlFinal_IdGroup){
+                AwsAsync_Login task4 = new AwsAsync_Login(this);
+                task4.execute(4);
+            }
+            else{
+                System.out.println("NO ENTRA A NADA ");
+                entraGrupos(branchAcces);
+            }
         }
     }
 
     private void entraGrupos(String idBranch) {
         Intent act_grupos =  new Intent(this, GroupActivity.class);
 
+        act_grupos.putExtra("awsList", (Serializable) awsListSeq);
+        act_grupos.putExtra("sqlList", (Serializable) sqlListSeq);
         act_grupos.putExtra("noBranch", idBranch);
+
         startActivity(act_grupos);
     }
 }

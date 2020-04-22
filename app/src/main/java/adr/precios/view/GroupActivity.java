@@ -3,7 +3,6 @@ package adr.precios.view;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,21 +18,20 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.GruopAdapter;
 import adr.precios.entities.GroupVo;
+import adr.precios.entities.ItemVo;
+import adr.precios.entities.SequenceVo;
+import adr.precios.entities.SubgroupVo;
 import adr.precios.wservices.ServGenerator_AWS;
 import adr.precios.wservices.servicesGroup;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -41,8 +39,11 @@ public class GroupActivity extends AppCompatActivity {
     GruopAdapter adapter;
     Menu menu;
 
-    private DBHelper dbHelper;
+    public DBHelper dbHelper;
     private Toolbar toolbar;
+
+    private ArrayList<SequenceVo> sqlListSeq;
+    private ArrayList<SequenceVo> awsListSeq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class GroupActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-      //  getWSIdSec_Group();
+        checkAWS();
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
         fillRecyclerView();
@@ -80,86 +81,14 @@ public class GroupActivity extends AppCompatActivity {
         super.onPause();
         timer.start();
     }
-/*
-    private void getWSIdSec_Group(){
-        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
-        Call<ResponseBody> result_idSecGroup = service.getIdSec_LastGroup();
 
-        result_idSecGroup.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if(response.isSuccessful()){
-                        String wsIdLastGroup = response.body().string();
-                        int awsIdGroup = Integer.parseInt(wsIdLastGroup);
-
-                        dbHelper.openDataBase();
-                        int sqlIdGroup = dbHelper.getLastIdGroup();
-                        dbHelper.close();
-
-                        if(awsIdGroup > sqlIdGroup){
-                            new GetGrupos_asyn().execute();
-
-                            dbHelper.openDataBase();
-                            dbHelper.updateSecGroup(awsIdGroup);
-                            dbHelper.close();
-
-                            Toast.makeText(GroupActivity.this, "Actualizacion de grupos", Toast.LENGTH_SHORT).show();
-                        } else {
-                            fillRecyclerView();
-                        }
-                    } else {
-                        Toast.makeText(GroupActivity.this, "Falla response grupos", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(GroupActivity.this, "Falla secuencia Grupos", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public class GetGrupos_asyn extends AsyncTask<Void,Void,Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
-            Call<List<GroupVo>> respon_gru = service.getGroupGet();
-
-            ArrayList<GroupVo> listGroup = new ArrayList<>();
-
-            try {
-                for(GroupVo gru: respon_gru.execute().body()){
-                    listGroup.add(gru);
-                }
-
-                GroupActivity.dbHelper.deleteGroups();
-                GroupActivity.dbHelper.addGroups(listGroup);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            fillRecyclerView();
-        }
-    }
-*/
     private void fillRecyclerView(){
         recyclerGroup = findViewById(R.id.recycler_group_id);
         recyclerGroup.setLayoutManager(new LinearLayoutManager(this));
 
-        dbHelper.openDataBase();
         String idbranch1 = getIntent().getStringExtra("noBranch");
+
+        dbHelper.openDataBase();
         ArrayList<GroupVo> listFinal = dbHelper.getGrupos(idbranch1);
         dbHelper.close();
 
@@ -181,6 +110,33 @@ public class GroupActivity extends AppCompatActivity {
                         dbHelper.grupos.get(recyclerGroup.getChildAdapterPosition(v)).getGruId(), idbranch2);
             }
         });
+    }
+
+    private void checkAWS(){
+        sqlListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("sqlList");
+        awsListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("awsList");
+
+        System.out.println("ACTIVITI GRUPOS entra a checa");
+
+        System.out.println("ACTIVITI GRUPOS UPDATE   aws ="+awsListSeq.get(4).getTsec_update()+"  -  sql ="+sqlListSeq.get(4).getTsec_update());
+        if(awsListSeq.get(4).getTsec_update() > sqlListSeq.get(4).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE SUBG");
+            awsUpdateSubgroup();
+        } else
+            if(awsListSeq.get(4).getTsec_final() > sqlListSeq.get(4).getTsec_final()){
+                System.out.println("ACTIVITI GRUPOS ENTRA A AWS FINAL SUBG");
+                awsAddSubgroup(sqlListSeq.get(4).getTsec_final());
+            }
+
+
+        if(awsListSeq.get(3).getTsec_update() > sqlListSeq.get(3).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE ITEM");
+            awsUpdateItems();
+        } else
+            if(awsListSeq.get(3).getTsec_final() > sqlListSeq.get(3).getTsec_final()){
+                System.out.println("ACTIVITI GRUPOS ENTRA A AWS FINAL ITEM");
+                awsAddItems(sqlListSeq.get(3).getTsec_final());
+        }
     }
 
     private void accessActPrices(String tittle, int idGroup, String idBranch){
@@ -269,6 +225,156 @@ public class GroupActivity extends AppCompatActivity {
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
             }
         }
+    }
+
+    private void awsUpdateSubgroup(){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<SubgroupVo>> respon_addGroup = service.getAllSubgroups();
+
+        respon_addGroup.enqueue(new Callback<List<SubgroupVo>>() {
+            @Override
+            public void onResponse(Call<List<SubgroupVo>> call, Response<List<SubgroupVo>> response) {
+                if(response.isSuccessful()){
+                    int awsUpdate = awsListSeq.get(4).getTsec_update();
+                    int awsFinal = awsListSeq.get(4).getTsec_final();
+
+                    ArrayList <SubgroupVo> listSubg = new ArrayList<SubgroupVo>();
+
+                    for(SubgroupVo ob : response.body()){
+                        listSubg.add(ob);
+                    }
+
+                    dbHelper.deleteTableData("subgrupos");
+                    dbHelper.addSubgroups(listSubg);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqUpdate(awsUpdate, 5);
+                    dbHelper.close();
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 5);
+                    dbHelper.close();
+
+                    Toast.makeText(GroupActivity.this, "actualizacion todos los subgrupos", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(GroupActivity.this, "Falla response Subgrupos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SubgroupVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "Falla conexion Subgrupos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsAddSubgroup (int secFinal){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<SubgroupVo>> respon_addGroup = service.getNewSubgroups(secFinal);
+
+        respon_addGroup.enqueue(new Callback<List<SubgroupVo>>() {
+            @Override
+            public void onResponse(Call<List<SubgroupVo>> call, Response<List<SubgroupVo>> response) {
+                if(response.isSuccessful()){
+                    int awsFinal = awsListSeq.get(4).getTsec_final();
+                    ArrayList <SubgroupVo> listSubg = new ArrayList<SubgroupVo>();
+
+                    for(SubgroupVo ob : response.body()){
+                        listSubg.add(ob);
+                    }
+
+                    dbHelper.addSubgroups(listSubg);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 5);
+                    dbHelper.close();
+
+                    Toast.makeText(GroupActivity.this, "se agrega subgrupos", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(GroupActivity.this, "error al agregar subgrupos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SubgroupVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "error al agregar subgrupos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsUpdateItems(){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<ItemVo>> respon_updItem = service.getAllItems();
+
+        respon_updItem.enqueue(new Callback<List<ItemVo>>() {
+            @Override
+            public void onResponse(Call<List<ItemVo>> call, Response<List<ItemVo>> response) {
+                if(response.isSuccessful()){
+                    int awsUpdate = awsListSeq.get(3).getTsec_update();
+                    int awsFinal = awsListSeq.get(3).getTsec_final();
+
+                    ArrayList<ItemVo> listItem = new ArrayList<ItemVo>();
+
+                    for(ItemVo ob : response.body()){
+                        listItem.add(ob);
+                    }
+
+                    dbHelper.deleteTableData("articulos");
+                    dbHelper.addItems(listItem);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqUpdate(awsUpdate, 4);
+                    dbHelper.close();
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 4);
+                    dbHelper.close();
+
+                } else{
+                    Toast.makeText(GroupActivity.this, "error al actualizar articulos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ItemVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "falla al actualizar articulos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsAddItems(int finalItem){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<ItemVo>> respon_addItem = service.getNewItems(finalItem);
+
+        respon_addItem.enqueue(new Callback<List<ItemVo>>() {
+            @Override
+            public void onResponse(Call<List<ItemVo>> call, Response<List<ItemVo>> response) {
+                if(response.isSuccessful()){
+                    int awsFinal = awsListSeq.get(3).getTsec_final();
+                    ArrayList<ItemVo> listItem = new ArrayList<ItemVo>();
+
+                    for(ItemVo ob : response.body()){
+                        listItem.add(ob);
+                    }
+
+                    dbHelper.addItems(listItem);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 4);
+                    dbHelper.close();
+
+                } else{
+                    Toast.makeText(GroupActivity.this, "error al agregar articulos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ItemVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "falla al agregar articulos", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

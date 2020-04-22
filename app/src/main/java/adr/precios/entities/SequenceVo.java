@@ -1,6 +1,8 @@
 package adr.precios.entities;
 
-public class SequenceVo {
+import java.io.Serializable;
+
+public class SequenceVo implements Serializable {
 
     private int tsec_clave;
     private int tsec_codigo;

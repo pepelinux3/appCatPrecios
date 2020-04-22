@@ -19,11 +19,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import adr.precios.entities.ItemVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockBranchVo;
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.PriceVo;
 import adr.precios.entities.StockInventoryVo;
+import adr.precios.entities.SubgroupVo;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -79,9 +81,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } else{
             System.out.println("NO CREA YA EXISTE UNA BASE DE DATOS   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         }
-
     }
-
 
 /*
     public void createDatabase() {
@@ -204,7 +204,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return buffer.toString();
     }
 
-    // *****************************************************************************************************************
+
     public ArrayList<GroupVo> getGrupos(String idBranch){
         c = db.rawQuery("SELECT gru_clave, gru_nombre, emp_clave FROM grupos, empresas, sucursales " +
                 "             WHERE gru_emp_clave = emp_clave " +
@@ -230,8 +230,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // ******************************************************************************************************************
     // *****************************************************************************************************************
 
-    public ArrayList<PriceVo> getPriceItem(String idGrupo, String idBranch){
-        int clave_subg = 0;
+    /*
         c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
                 "      lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
                 " FROM articulos, listapreciosdetalle, subgrupos, " +
@@ -244,6 +243,27 @@ public class DBHelper extends SQLiteOpenHelper {
                 "   and suc_clave = "+idBranch+
                 "   and subg_gru_clave = "+idGrupo+" "+
                 " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
+    */
+
+    public ArrayList<PriceVo> getPriceItem(String idGrupo, String idBranch){
+        int clave_subg = 0;
+
+        /*
+        IFNULL(lisd_fecha, '2021-04-19') as lisd_fecha,
+	   IFNULL(lisd_precio, 333.33) as lisd_precio,
+         */
+
+        c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha, "+
+                        "       IFNULL(lisd_precio, 0) as lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
+                        "  FROM subgrupos, sucursales, listapreciosEncabezado, "+
+					    "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
+					    "   and lisd_lise_clave = lise_clave "+
+                        " WHERE art_subg_clave = subg_clave "+
+                        "   and suc_emp_clave = art_emp_clave "+
+                        "   and suc_lise_clave = lise_clave "+
+                        "   and suc_clave = "+idBranch+
+                        "   and subg_gru_clave = "+idGrupo+
+                        " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
         Item = new ArrayList<PriceVo>();
 
@@ -322,7 +342,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("MYDB", "UPDATE fallo",e);
         }
     }
-
+/*
     public int getLastIdInv() {
         c = db.rawQuery("SELECT sec_final FROM secuencia " +
                             " WHERE sec_clave = 1", new String[]{});
@@ -345,18 +365,34 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("secuencia", registro, " sec_clave = "+1, null);
         db.close();
     }
+*/
 
-    public void updateSecGroup (int lastGru){
+    public void updateSeqUpdate(int noUpdate, int idSeq){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues registro = new ContentValues();
-        registro.put("sec_update", lastGru);
+        registro.put("sec_update", noUpdate);
 
-        db.update("secuencia", registro, " sec_clave = 6", null);
+        db.update("secuencia", registro, " sec_clave = "+idSeq, null);
         db.close();
     }
 
-    public void deleteGroups(String nameTable) {
+    public void updateSeqFinal(int noFinal, int idSeq){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues registro = new ContentValues();
+
+        registro.put("sec_inicial", "sec_final");
+        db.update("secuencia", registro, " sec_clave = "+idSeq, null);
+
+        registro.put("sec_final", noFinal);
+        db.update("secuencia", registro, " sec_clave = "+idSeq, null);
+
+        db.close();
+    }
+
+
+    public void deleteTableData(String nameTable) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(nameTable, null, null);
         db.close();
@@ -379,6 +415,70 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.insert("grupos", null, registro);
             }
             System.out.println(" herper TERMINA DE HACER INSERTS  ...................................");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void addSubgroups(List<SubgroupVo> listsubg) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            ContentValues registro = new ContentValues();
+
+            for (SubgroupVo ob : listsubg) {
+                registro.put("subg_clave", ob.getSubClave());
+                registro.put("subg_nombre", ob.getSubNombre());
+                registro.put("subg_status", 1);
+                registro.put("subg_descripcion", ob.getSubDescripcion());
+                registro.put("subg_gru_clave", ob.getSubGroup());
+
+                db.insert("subgrupos", null, registro);
+            }
+            System.out.println(" HELPER TERMINA DE HACER INSERTS SUBGRUPOS ...................................");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void addItems(List<ItemVo> listItem) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            ContentValues regisAdd = new ContentValues();
+            ContentValues regisUpdate = new ContentValues();
+
+            for (ItemVo ob : listItem) {
+                regisUpdate.put("art_clavearticulo", ob.getNoParte());
+                regisUpdate.put("art_nombreCorto", ob.getNomCorto());
+                regisUpdate.put("art_nombreLargo", ob.getNomLargo());
+
+                regisUpdate.put("art_status", ob.getStatus());
+                regisUpdate.put("art_subg_clave", ob.getIdSubgrupo());
+                regisUpdate.put("art_listavisible", ob.getVisible());
+
+                int update =  db.update("articulos", regisUpdate, " art_clave="+ob.getIdClave(), null);
+
+                if(update != 1) {
+                    regisAdd.put("art_clave", ob.getIdClave());
+                    regisAdd.put("art_clavearticulo", ob.getNoParte());
+                    regisAdd.put("art_nombreCorto", ob.getNomCorto());
+                    regisAdd.put("art_nombreLargo", ob.getNomLargo());
+                    regisAdd.put("art_inventariable", 1);
+
+                    regisAdd.put("art_status", ob.getStatus());
+                    regisAdd.put("art_emp_clave", ob.getIdEmpresa());
+                    regisAdd.put("art_subg_clave", ob.getIdSubgrupo());
+                    regisAdd.put("art_listavisible", ob.getVisible());
+
+                    db.insert("articulos", null, regisAdd);
+                }
+            }
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

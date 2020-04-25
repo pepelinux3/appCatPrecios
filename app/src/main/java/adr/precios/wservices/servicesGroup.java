@@ -4,6 +4,7 @@ import java.util.List;
 
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.ItemVo;
+import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -38,4 +39,14 @@ public interface servicesGroup {
 
     @GET("RESTadrimar/webresources/inventory/editem/{id}")
     Call<List<ItemVo>> getNewItems(@Path("id") int idLastItem);
+
+    @GET("RESTadrimar/webresources/inventory/newinv/{id}")
+    Call<List<StockInventoryVo>> getNewInv(@Path("id") int idLastInv);
+
+
+    @GET("RESTadrimar/webresources/inventory/allinv")
+    Call<List<StockInventoryVo>> getAllInvent();
+
+    @GET("RESTadrimar/webresources/inventory/{id}")
+    Call<List<StockInventoryVo>> getForDayInvent(@Path("id") int idLast);
 }

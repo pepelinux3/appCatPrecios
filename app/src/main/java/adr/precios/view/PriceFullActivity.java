@@ -18,6 +18,7 @@ import com.example.adrprecios.R;
 
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.PriceFullAdapter;
+import adr.precios.tools.MiDialogFragment;
 
 
 public class PriceFullActivity extends AppCompatActivity {
@@ -54,9 +55,11 @@ public class PriceFullActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
-    private void accesActivityExistencia (){
-      //  Intent activityExistencia = new Intent(this, ExistActivity.class);
-      //  startActivity(activityExistencia);
+    private void accesActivityExistencia (String recyNoItem){
+        MiDialogFragment myDialogFragment = new MiDialogFragment();
+
+        myDialogFragment.setValue(recyNoItem);
+        myDialogFragment.show(getSupportFragmentManager(), "MyFragment");
     }
 
     private void setUpToolBar() {
@@ -105,12 +108,13 @@ public class PriceFullActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
-                accesActivityExistencia ();
+                // accesActivityExistencia ();
+                accesActivityExistencia(priceFullAdapter.getNoParteAdapter());
                 return true;
 
             case 2:
-                Toast.makeText(this, "Ver Imagen", Toast.LENGTH_SHORT).show();
-                accesActivityImagen ();
+                Toast.makeText(this, "No disponible", Toast.LENGTH_SHORT).show();
+                //accesActivityImagen ();
                 return true;
 
             default: return super.onContextItemSelected(item);

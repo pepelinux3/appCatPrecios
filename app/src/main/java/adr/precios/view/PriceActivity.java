@@ -165,11 +165,11 @@ public class PriceActivity extends AppCompatActivity {
                 return true;
 
             case 2:
-                Toast.makeText(this, "Imagenes", Toast.LENGTH_SHORT).show();
-                DBHelper dbHelper = new DBHelper(getApplicationContext());
-                dbHelper.sqlUpdate(priceAdapter.getNoParteAdapter());
+                Toast.makeText(this, "No disponible", Toast.LENGTH_SHORT).show();
+               // DBHelper dbHelper = new DBHelper(getApplicationContext());
+               // dbHelper.sqlUpdate(priceAdapter.getNoParteAdapter());
 
-                accesActivityImagen ();
+               // accesActivityImagen ();
                 //modificar ();
 
                 return true;

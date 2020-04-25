@@ -3,6 +3,7 @@ package adr.precios.adapter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,14 @@ public class PriceFullAdapter
     List<PriceVo> listItemFull;
     List<PriceVo> listItemFullComplet;
 
+    String recyNoParte;
+
     public PriceFullAdapter(ArrayList<PriceVo> listItemFull){
         this.listItemFull = listItemFull;
         listItemFullComplet = new ArrayList<>(listItemFull);
     }
+
+    public String getNoParteAdapter() { return recyNoParte; }
 
     @NonNull
     @Override
@@ -104,9 +109,9 @@ public class PriceFullAdapter
         }
     };
 
-    //public class ViewHolderFull extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public class ViewHolderFull extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
-    public class ViewHolderFull extends RecyclerView.ViewHolder {
+   // public class ViewHolderFull extends RecyclerView.ViewHolder {
         TextView tvFullNoArticulo;
         TextView tvFullGrupo;
         TextView tvFullSubGrupo;
@@ -126,13 +131,16 @@ public class PriceFullAdapter
             tvFullPrice = (TextView)itemView.findViewById(R.id.priceFull_Price);
 
             cardView = (CardView)itemView.findViewById(R.id.id_cardPriceFull);
-            //cardView.setOnCreateContextMenuListener(this);
+            cardView.setOnCreateContextMenuListener(this);
         }
-    /**
+
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            recyNoParte = "";
+
+            recyNoParte = listItemFull.get(this.getAdapterPosition()).getNoItem();
             menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
             menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
-        }    **/
+        }
     }
 }

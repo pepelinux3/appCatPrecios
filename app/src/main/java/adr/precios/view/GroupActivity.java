@@ -26,6 +26,7 @@ import adr.precios.adapter.GruopAdapter;
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.ItemVo;
 import adr.precios.entities.SequenceVo;
+import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import adr.precios.wservices.ServGenerator_AWS;
 import adr.precios.wservices.servicesGroup;
@@ -136,7 +137,18 @@ public class GroupActivity extends AppCompatActivity {
             if(awsListSeq.get(3).getTsec_final() > sqlListSeq.get(3).getTsec_final()){
                 System.out.println("ACTIVITI GRUPOS ENTRA A AWS FINAL ITEM");
                 awsAddItems(sqlListSeq.get(3).getTsec_final());
-        }
+                awsAddInventory(sqlListSeq.get(3).getTsec_final());
+            }
+
+
+        if(awsListSeq.get(0).getTsec_update() > sqlListSeq.get(0).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE INVENTARIO");
+            awsUpdateInvent();
+        } else
+            if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()){
+                System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE INVENTARIO");
+                awsUpdateDayInvent(sqlListSeq.get(0).getTsec_final());
+            }
     }
 
     private void accessActPrices(String tittle, int idGroup, String idBranch){
@@ -377,4 +389,105 @@ public class GroupActivity extends AppCompatActivity {
         });
     }
 
+    private void awsAddInventory (int finalItem){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<StockInventoryVo>> respon_addInv = service.getNewInv(finalItem);
+
+        respon_addInv.enqueue(new Callback<List<StockInventoryVo>>() {
+            @Override
+            public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
+                if(response.isSuccessful()){
+                    ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
+
+                    for(StockInventoryVo ob: response.body()){
+                        listInv.add(ob);
+                    }
+
+                    dbHelper.addInventory(listInv);
+
+                } else{
+                    Toast.makeText(GroupActivity.this, "error al agregar Inventario", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "falla al agregar inventario", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsUpdateInvent(){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<StockInventoryVo>> respon_updInv = service.getAllInvent();
+
+        respon_updInv.enqueue(new Callback<List<StockInventoryVo>>() {
+            @Override
+            public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
+                if(response.isSuccessful()){
+                    int awsUpdate = awsListSeq.get(0).getTsec_update();
+                    int awsFinal = awsListSeq.get(0).getTsec_final();
+
+                    ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
+
+                    for(StockInventoryVo ob: response.body()){
+                        listInv.add(ob);
+                    }
+
+                    dbHelper.deleteTableData("inventario");
+                    dbHelper.addInventory(listInv);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqUpdate(awsUpdate, 1);
+                    dbHelper.close();
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 1);
+                    dbHelper.close();
+
+                } else {
+                    Toast.makeText(GroupActivity.this, "error al actualizar Inventario", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "failure todo inventario", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsUpdateDayInvent(int finalInven){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<StockInventoryVo>> respon_updInv = service.getForDayInvent(finalInven);
+
+        respon_updInv.enqueue(new Callback<List<StockInventoryVo>>() {
+            @Override
+            public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
+                if(response.isSuccessful()){
+                    int awsFinal = awsListSeq.get(0).getTsec_final();
+
+                    ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
+
+                    for(StockInventoryVo ob: response.body()){
+                        listInv.add(ob);
+                    }
+
+                    dbHelper.updateDayInventory(listInv);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 1);
+                    dbHelper.close();
+
+                } else{
+                    Toast.makeText(GroupActivity.this, "error al actualizar Inventario dia", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "failure todo inventario dia", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

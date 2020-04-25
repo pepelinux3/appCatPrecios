@@ -41,9 +41,10 @@ public class DBHelper extends SQLiteOpenHelper {
             + TABLE_DB1 + " ADD COLUMN " + COLUMN_DB1_ + " VARCHAR ( 45 ) DEFAULT 'xxx';";
 
     public ArrayList <GroupVo> grupos;
-    public ArrayList <PriceVo> Item;
-    public ArrayList <StockBranchVo> branch;
-    ArrayList <PriceVo> ItemFull;
+
+    private ArrayList <PriceVo> Item;
+    private ArrayList <StockBranchVo> stockBranch;
+    private ArrayList <PriceVo> ItemFull;
 
     Cursor c = null;
 
@@ -279,9 +280,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return Item;
     }
 
-    // **************************************************************************************************************
-    public ArrayList<PriceVo> getPriceItemFull(String idBranch){
-        c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
+    /*
+          c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
                 "       art_nombrelargo, lisd_fecha, lisd_precio "+
                 "  FROM articulos, listapreciosdetalle, subgrupos, grupos, "+
                 "       listapreciosEncabezado, sucursales"+
@@ -291,6 +291,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 "   and suc_lise_clave = lise_clave"+
                 "   and art_emp_clave = suc_emp_clave "+
                 "   and lisd_lise_clave = lise_clave"+
+                "   and suc_clave = "+idBranch+
+                " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
+     */
+
+    // **************************************************************************************************************
+    public ArrayList<PriceVo> getPriceItemFull(String idBranch){
+        c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
+                "       art_nombrelargo, lisd_fecha, IFNULL(lisd_precio, 0) as lisd_precio "+
+                "  FROM subgrupos, grupos, listapreciosEncabezado, sucursales, "+
+                "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
+                "   and lisd_lise_clave = lise_clave "+
+                " WHERE art_subg_clave = subg_clave "+
+                "   and subg_gru_clave = gru_clave "+
+                "   and suc_lise_clave = lise_clave"+
+                "   and art_emp_clave = suc_emp_clave "+
                 "   and suc_clave = "+idBranch+
                 " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
@@ -305,25 +320,25 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // *****************************************************************************************************************
     public ArrayList<StockBranchVo> getInventory(String noItem){
-        c = db.rawQuery("SELECT suc_clave, suc_nombreCorto, inv_existencia, lisd_precio " +
-                "  FROM sucursales, inventario, articulos,  " +
-                "       listapreciosEncabezado, listapreciosdetalle "+
+        c = db.rawQuery("SELECT suc_clave, suc_nombreCorto, inv_existencia, IFNULL(lisd_precio, 0) as lisd_precio " +
+                "  FROM sucursales, inventario, listapreciosEncabezado,  " +
+                "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
+                "   and lisd_lise_clave = lise_clave "+
                 " WHERE inv_suc_clave = suc_clave "+
                 "   and suc_lise_clave = lise_clave "+
-                "   and lisd_lise_clave = lise_clave "+
-                "   and lisd_art_clave = art_clave "+
+
                 "   and inv_art_clave = art_clave "+
                 "   and art_clavearticulo = '"+noItem+"'"+
                 "   and suc_status = 1 and art_listavisible = 1"+
                 " ORDER BY suc_nombreCorto", new String[]{});
 
-        branch = new ArrayList<StockBranchVo>();
+        stockBranch = new ArrayList<StockBranchVo>();
 
         while (c.moveToNext()){
-            branch.add(new StockBranchVo(c.getInt(0), c.getString(1), c.getString(2), c.getFloat(3)));
+            stockBranch.add(new StockBranchVo(c.getInt(0), c.getString(1), c.getString(2), c.getFloat(3)));
         }
 
-        return branch;
+        return stockBranch;
     }
 
     public void sqlUpdate (String noParte){
@@ -342,30 +357,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("MYDB", "UPDATE fallo",e);
         }
     }
-/*
-    public int getLastIdInv() {
-        c = db.rawQuery("SELECT sec_final FROM secuencia " +
-                            " WHERE sec_clave = 1", new String[]{});
-
-        int idSecInv = 0;
-
-        while (c.moveToNext()) {
-            idSecInv = c.getInt(0);
-        }
-
-        return idSecInv;
-    }
-
-    public void updateSecInv (int lastInv){
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues registro = new ContentValues();
-        registro.put("sec_final", lastInv);
-
-        db.update("secuencia", registro, " sec_clave = "+1, null);
-        db.close();
-    }
-*/
 
     public void updateSeqUpdate(int noUpdate, int idSeq){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -446,6 +437,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void addItems(List<ItemVo> listItem) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
@@ -479,6 +471,54 @@ public class DBHelper extends SQLiteOpenHelper {
                     db.insert("articulos", null, regisAdd);
                 }
             }
+
+            System.out.println(" HELPER TERMINA DE HACER INSERTS ARTICULOS ...................................");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void addInventory(List<StockInventoryVo> listInv) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            ContentValues registro = new ContentValues();
+
+            for (StockInventoryVo ob : listInv) {
+               // registro.put("inv_clave", ob.getInvId());
+                registro.put("inv_art_clave", ob.getInvIdItem());
+                registro.put("inv_suc_clave", ob.getInvIdBranch());
+                registro.put("inv_existencia", ob.getInvExist());
+
+                db.insert("inventario", null, registro);
+            }
+            System.out.println(" HELPER TERMINA DE HACER INSERTS INVENTARIO  ...................................");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void updateDayInventory(List<StockInventoryVo> listInv) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            ContentValues registro = new ContentValues();
+
+            for (StockInventoryVo ob : listInv) {
+             //   registro.put("inv_art_clave", ob.getInvIdItem());
+             //   registro.put("inv_suc_clave", ob.getInvIdBranch());
+                registro.put("inv_existencia", ob.getInvExist());
+                registro.put("inv_ultimo", ob.getInvUltimo());
+
+                db.update("inventario", registro, " inv_art_clave = "+ob.getInvIdItem()+" and inv_suc_clave = "+ob.getInvIdBranch(), null);
+            }
+            System.out.println(" HELPER TERMINA DE HACER UPDATE INVENTARIO DIA ...................................");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

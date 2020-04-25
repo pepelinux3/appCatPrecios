@@ -140,7 +140,7 @@ public class PriceAdapter
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-/*
+
             recyNoParte = "";
             if(listItems.get(this.getAdapterPosition()).getIdItem() != 0){
 
@@ -148,7 +148,7 @@ public class PriceAdapter
                 menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
                 menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
 
-            }*/
+            }
         }
     }
 }

@@ -21,16 +21,25 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.PriceAdapter;
+import adr.precios.entities.StockInventoryVo;
 import adr.precios.tools.MiDialogFragment;
+import adr.precios.wservices.ServGenerator_AWS;
+import adr.precios.wservices.servicesGroup;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PriceActivity extends AppCompatActivity {
 
     private Toolbar toolbar2;
     private RecyclerView recyclerPrice;
     private PriceAdapter priceAdapter;
-    private EditText edNoParte;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +59,7 @@ public class PriceActivity extends AppCompatActivity {
        // DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
        // databaseAcces.open();
 
-        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper = new DBHelper(getApplicationContext());
         dbHelper.openDataBase();
 
         String idGroup = getIntent().getStringExtra("groupId");
@@ -161,7 +170,8 @@ public class PriceActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Existencias", Toast.LENGTH_SHORT).show();
-                accesActivityExistencia(priceAdapter.getNoParteAdapter());
+               // accesActivityExistencia(priceAdapter.getNoParteAdapter());
+                awsUpdateExist();
                 return true;
 
             case 2:
@@ -176,5 +186,38 @@ public class PriceActivity extends AppCompatActivity {
 
             default: return super.onContextItemSelected(item);
         }
+    }
+
+    private void awsUpdateExist(){
+        System.out.println("articulo existencia = "+priceAdapter.getIdItem()+"   xxxxxxxxxxxxxxx");
+
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<StockInventoryVo>> respon_updateExist = service.getNoPartInvent(priceAdapter.getIdItem());
+
+        respon_updateExist.enqueue(new Callback<List<StockInventoryVo>>() {
+            @Override
+            public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
+                System.out.println("ENTRA A AWS DE EXISTENCIAS ...................................");
+                if(response.isSuccessful()){
+                    ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
+
+                    for(StockInventoryVo ob: response.body()){
+                        listInv.add(ob);
+                    }
+
+                    dbHelper.updateDayInventory(listInv);
+                } else{
+                    Toast.makeText(PriceActivity.this, "error al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
+                }
+
+                accesActivityExistencia(priceAdapter.getNoParteAdapter());
+            }
+
+            @Override
+            public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
+                accesActivityExistencia(priceAdapter.getNoParteAdapter());
+                Toast.makeText(PriceActivity.this, "Falla al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

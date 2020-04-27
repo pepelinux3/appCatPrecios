@@ -4,6 +4,7 @@ import java.util.List;
 
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.ItemVo;
+import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import okhttp3.ResponseBody;
@@ -18,6 +19,9 @@ public interface servicesGroup {
 
     @GET("RESTadrimar/webresources/inventory/allsequences")
     Call<ResponseBody> getSequences();
+
+    @GET("RESTadrimar/webresources/inventory/allsequences")
+    Call<List<SequenceVo>> getSeqUpdate();
 
 
     @GET("RESTadrimar/webresources/inventory/allgroups")
@@ -49,4 +53,8 @@ public interface servicesGroup {
 
     @GET("RESTadrimar/webresources/inventory/{id}")
     Call<List<StockInventoryVo>> getForDayInvent(@Path("id") int idLast);
+
+    @GET("RESTadrimar/webresources/inventory/noparte/{id}")
+    Call<List<StockInventoryVo>> getNoPartInvent(@Path("id") int idItem);
+
 }

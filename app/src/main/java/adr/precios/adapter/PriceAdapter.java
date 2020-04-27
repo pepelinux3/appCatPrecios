@@ -30,6 +30,7 @@ public class PriceAdapter
     List<PriceVo> listItemComplet;
 
     String recyNoParte;
+    int recIdItem;
 
     public PriceAdapter(ArrayList<PriceVo> listItems){
         this.listItems = listItems;
@@ -37,6 +38,7 @@ public class PriceAdapter
     }
 
     public String getNoParteAdapter() { return recyNoParte; }
+    public int getIdItem() { return recIdItem; }
 
     @NonNull
     @Override
@@ -140,14 +142,15 @@ public class PriceAdapter
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
             recyNoParte = "";
-            if(listItems.get(this.getAdapterPosition()).getIdItem() != 0){
+            recIdItem = 0;
 
+            if(listItems.get(this.getAdapterPosition()).getIdItem() != 0){
                 recyNoParte = listItems.get(this.getAdapterPosition()).getNoItem();
+                recIdItem = listItems.get(this.getAdapterPosition()).getIdItem();
+
                 menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
                 menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
-
             }
         }
     }

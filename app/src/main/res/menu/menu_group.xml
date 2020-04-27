@@ -16,6 +16,11 @@
             app:showAsAction="never"/>
 
         <item
+            android:id="@+id/me_actualizar"
+            android:title="Actualizar"
+            app:showAsAction="never"/>
+
+        <item
             android:id="@+id/me_promocion"
             android:title="Promociones"
             app:showAsAction="never"/>

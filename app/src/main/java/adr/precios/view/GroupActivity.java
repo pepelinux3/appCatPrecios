@@ -28,6 +28,7 @@ import adr.precios.entities.ItemVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
+import adr.precios.wservices.AwsAsync_Login;
 import adr.precios.wservices.ServGenerator_AWS;
 import adr.precios.wservices.servicesGroup;
 import retrofit2.Call;
@@ -53,7 +54,12 @@ public class GroupActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        checkAWS();
+      //  checkAWS();
+        Toast.makeText(this, "CREA ACTIVITI GRUPOS..", Toast.LENGTH_SHORT).show();
+
+        sqlListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("sqlList");
+        awsListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("awsList");
+
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
         fillRecyclerView();
@@ -113,9 +119,39 @@ public class GroupActivity extends AppCompatActivity {
         });
     }
 
+    private void checkGropupAWS(){
+        /*
+        if(awsListSeq.get(5).getTsec_update() > sqlListSeq.get(5).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE GROUP");
+            awsUpdateGroup();
+        } else
+        if(awsListSeq.get(5).getTsec_final() > sqlListSeq.get(5).getTsec_final()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS FINAL GROUP");
+            awsAddGroup(sqlListSeq.get(5).getTsec_final());
+        }
+        */
+        if(awsListSeq.get(3).getTsec_update() > sqlListSeq.get(3).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE ITEM");
+            awsUpdateItems();
+        } else
+        if(awsListSeq.get(3).getTsec_final() > sqlListSeq.get(3).getTsec_final()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS FINAL ITEM");
+            awsAddItems(sqlListSeq.get(3).getTsec_final());
+            awsAddInventory(sqlListSeq.get(3).getTsec_final());
+        }
+
+
+        if(awsListSeq.get(0).getTsec_update() > sqlListSeq.get(0).getTsec_update()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE INVENTARIO");
+            awsUpdateInvent();
+        } else
+        if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()){
+            System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE INVENTARIO");
+            awsUpdateDayInvent(sqlListSeq.get(0).getTsec_final());
+        }
+    }
+
     private void checkAWS(){
-        sqlListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("sqlList");
-        awsListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("awsList");
 
         System.out.println("ACTIVITI GRUPOS entra a checa");
 
@@ -225,6 +261,22 @@ public class GroupActivity extends AppCompatActivity {
             startActivity(preciosFull);
         }
 
+        if(id == R.id.me_promocion){
+            Toast.makeText(this, "Opcion no disponible", Toast.LENGTH_SHORT).show();
+        }
+
+        if(id == R.id.me_actualizar){
+            dbHelper.openDataBase();
+            sqlListSeq = dbHelper.getTableSequence();
+            dbHelper.close();
+
+            System.out.println("Final sql = "+sqlListSeq.get(5).getTsec_final()+"  aws = "+awsListSeq.get(5).getTsec_final()+" 000000000000000000000.......");
+
+            //checkGropupAWS();
+            awsGetSequence();
+            Toast.makeText(this, "Prueba Actualizar", Toast.LENGTH_SHORT).show();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -237,6 +289,112 @@ public class GroupActivity extends AppCompatActivity {
                 drawable.setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
             }
         }
+    }
+
+    private void awsGetSequence (){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<SequenceVo>> respon_sequence = service.getSeqUpdate();
+
+        respon_sequence.enqueue(new Callback<List<SequenceVo>>() {
+            @Override
+            public void onResponse(Call<List<SequenceVo>> call, Response<List<SequenceVo>> response) {
+                if(response.isSuccessful()){
+
+                    ArrayList <SequenceVo> listSeq = new ArrayList<SequenceVo>();
+                    for(SequenceVo ob : response.body()){
+                        listSeq.add(ob);
+                    }
+
+                    awsListSeq = listSeq;
+                    checkGropupAWS();
+                } else{
+                    Toast.makeText(GroupActivity.this, "Falla response secuencia", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SequenceVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "error conexion secuencia", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsUpdateGroup (){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<GroupVo>> respon_updateGroup = service.getAllGroups();
+
+        respon_updateGroup.enqueue(new Callback<List<GroupVo>>() {
+            @Override
+            public void onResponse(Call<List<GroupVo>> call, Response<List<GroupVo>> response) {
+                if(response.isSuccessful()){
+                    int awsUpdate = awsListSeq.get(5).getTsec_update();
+                    int awsFinal = awsListSeq.get(5).getTsec_final();
+
+                    ArrayList <GroupVo> listGroup = new ArrayList<GroupVo>();
+
+                    for(GroupVo ob : response.body()){
+                        listGroup.add(ob);
+                    }
+
+                    dbHelper.deleteTableData("grupos");
+                    dbHelper.addGroups(listGroup);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqUpdate(awsUpdate, 6);
+                    dbHelper.close();
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 6);
+                    dbHelper.close();
+
+                    Toast.makeText(GroupActivity.this, "actualizacion todos los grupos", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(GroupActivity.this, "Falla response grupos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GroupVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "error conexion grupos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void awsAddGroup (int secFinal){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<GroupVo>> respon_addGroup = service.getNewGroups(secFinal);
+
+        respon_addGroup.enqueue(new Callback<List<GroupVo>>() {
+            @Override
+            public void onResponse(Call<List<GroupVo>> call, Response<List<GroupVo>> response) {
+                if(response.isSuccessful()){
+                    int awsFinal = awsListSeq.get(5).getTsec_final();
+
+                    ArrayList <GroupVo> listGroup = new ArrayList<GroupVo>();
+
+                    for(GroupVo ob: response.body()){
+                        listGroup.add(ob);
+                    }
+
+                    dbHelper.addGroups(listGroup);
+
+                    dbHelper.openDataBase();
+                    dbHelper.updateSeqFinal(awsFinal, 6);
+                    dbHelper.close();
+
+                    fillRecyclerView();
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(GroupActivity.this, "Falla response grupos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GroupVo>> call, Throwable t) {
+                Toast.makeText(GroupActivity.this, "error conexion grupos", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void awsUpdateSubgroup(){
@@ -472,7 +630,7 @@ public class GroupActivity extends AppCompatActivity {
                     for(StockInventoryVo ob: response.body()){
                         listInv.add(ob);
                     }
-
+                    System.out.println("TERMINA DE LEER JSON INVENTARIO DIA **************");
                     dbHelper.updateDayInventory(listInv);
 
                     dbHelper.openDataBase();
@@ -490,4 +648,6 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

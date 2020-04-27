@@ -7,16 +7,18 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import adr.precios.view.GroupActivity;
+import adr.precios.view.PriceActivity;
 import retrofit2.Call;
 
-public class AwsAsync_Groups extends AsyncTask <Integer, String, String> {
-    private WeakReference<GroupActivity> activityWeakReference;
+public class AwsAsync_Prices extends AsyncTask <Integer, String, String> {
+    private WeakReference<PriceActivity> activityWeakReference;
     private int option;
 
-    public AwsAsync_Groups(GroupActivity activity) {
-        activityWeakReference = new WeakReference<GroupActivity>(activity);
+    public AwsAsync_Prices(PriceActivity activity) {
+        activityWeakReference = new WeakReference<PriceActivity>(activity);
     }
 
     @Override
@@ -24,22 +26,22 @@ public class AwsAsync_Groups extends AsyncTask <Integer, String, String> {
         String strResponse = "";
         option = integers[0];
 
-        GroupActivity activity = activityWeakReference.get();
+        PriceActivity activity = activityWeakReference.get();
 
         try {
             switch(option) {
                 case 1:
                     servicesGroup serv_UpdateSubg = ServGenerator_AWS.createService(servicesGroup.class);
-                    Call<List<SubgroupVo>> respon_group = serv_UpdateSubg.getAllSubgroups();
+                    Call<List<StockInventoryVo>> respon_group = serv_UpdateSubg.getNoPartInvent(333);
 
-                    ArrayList<SubgroupVo> listSubg = new ArrayList<>();
+                    ArrayList<StockInventoryVo> listSubg = new ArrayList<>();
 
-                    for(SubgroupVo subg: respon_group.execute().body()){
-                        listSubg.add(subg);
+                    for(StockInventoryVo ob: respon_group.execute().body()){
+                        listSubg.add(ob);
                     }
 
-                    activity.dbHelper.deleteTableData("subgrupos");
-                    activity.dbHelper.addSubgroups(listSubg);
+                 //   activity.dbHelper.deleteTableData("subgrupos");
+                 //   activity.dbHelper.addSubgroups(listSubg);
                     break;
 
                 case 2:
@@ -62,7 +64,7 @@ public class AwsAsync_Groups extends AsyncTask <Integer, String, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
-        GroupActivity activity = activityWeakReference.get();
+        PriceActivity activity = activityWeakReference.get();
         if (activity == null || activity.isFinishing()) {
             return;
         }

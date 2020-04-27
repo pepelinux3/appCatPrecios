@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adr.precios.entities.GroupVo;
+import adr.precios.view.GroupActivity;
 import adr.precios.view.MainActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class AwsAsync_Login extends AsyncTask <Integer, String, String>{
     private WeakReference<MainActivity> activityWeakReference;
+
     private int option;
 
     public AwsAsync_Login(MainActivity activity) {

@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.adrprecios.R;
@@ -29,6 +30,7 @@ import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import adr.precios.wservices.AwsAsync_Login;
+import adr.precios.wservices.AwsAsync_Prices;
 import adr.precios.wservices.ServGenerator_AWS;
 import adr.precios.wservices.servicesGroup;
 import retrofit2.Call;
@@ -41,11 +43,13 @@ public class GroupActivity extends AppCompatActivity {
     GruopAdapter adapter;
     Menu menu;
 
-    public DBHelper dbHelper;
     private Toolbar toolbar;
+    public ProgressBar progressBar;
 
-    private ArrayList<SequenceVo> sqlListSeq;
-    private ArrayList<SequenceVo> awsListSeq;
+    public DBHelper dbHelper;
+
+    public ArrayList<SequenceVo> sqlListSeq;
+    public ArrayList<SequenceVo> awsListSeq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_grupos);
 
         dbHelper = new DBHelper(this);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
       //  checkAWS();
         Toast.makeText(this, "CREA ACTIVITI GRUPOS..", Toast.LENGTH_SHORT).show();
@@ -65,15 +70,15 @@ public class GroupActivity extends AppCompatActivity {
         fillRecyclerView();
     }
 
-    CountDownTimer timer = new CountDownTimer(240 * 60 * 1000, 1000) {
-
+   // CountDownTimer timer = new CountDownTimer(240 * 60 * 1000, 1000) {
+        CountDownTimer timer = new CountDownTimer(  240 * 60 * 1000, 1000) {
         public void onTick(long millisUntilFinished) {
             //Some code
         }
 
         public void onFinish() {
             finish();
-            System.exit(0);
+           // System.exit(0);
         }
     };
 
@@ -266,15 +271,30 @@ public class GroupActivity extends AppCompatActivity {
         }
 
         if(id == R.id.me_actualizar){
+            awsGetSequence();
+
             dbHelper.openDataBase();
             sqlListSeq = dbHelper.getTableSequence();
             dbHelper.close();
 
-            System.out.println("Final sql = "+sqlListSeq.get(5).getTsec_final()+"  aws = "+awsListSeq.get(5).getTsec_final()+" 000000000000000000000.......");
+            System.out.println("Final INVENTARIO sql = "+sqlListSeq.get(0).getTsec_final()+"  aws = "+awsListSeq.get(0).getTsec_final()+" 000000000000000000000.......");
+            System.out.println("update INVENTARIO sql = "+sqlListSeq.get(0).getTsec_update()+"  aws = "+awsListSeq.get(0).getTsec_update()+" 000000000000000000000.......");
 
-            //checkGropupAWS();
-            awsGetSequence();
-            Toast.makeText(this, "Prueba Actualizar", Toast.LENGTH_SHORT).show();
+            if(awsListSeq.get(0).getTsec_update() > sqlListSeq.get(0).getTsec_update()){
+                System.out.println("ACTIVITI GRUPOS ENTRA A AWS UPDATE INVENTARIO");
+                //awsUpdateInvent();
+
+                AwsAsync_Prices task2 = new AwsAsync_Prices(this);
+                task2.execute(2);
+            } else
+                if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()){
+                   // awsGetSequence();
+
+                    AwsAsync_Prices task1 = new AwsAsync_Prices(this);
+                    task1.execute(1);
+                } else {
+                    Toast.makeText(this, "El Inventario esta actualizado", Toast.LENGTH_SHORT).show();
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -306,7 +326,6 @@ public class GroupActivity extends AppCompatActivity {
                     }
 
                     awsListSeq = listSeq;
-                    checkGropupAWS();
                 } else{
                     Toast.makeText(GroupActivity.this, "Falla response secuencia", Toast.LENGTH_SHORT).show();
                 }
@@ -314,7 +333,7 @@ public class GroupActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<SequenceVo>> call, Throwable t) {
-                Toast.makeText(GroupActivity.this, "error conexion secuencia", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupActivity.this, "Error conexion secuencia", Toast.LENGTH_SHORT).show();
             }
         });
     }

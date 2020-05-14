@@ -10,14 +10,16 @@ public class SequenceVo implements Serializable {
     private String tsec_fecha;
     private int tsec_final;
     private int tsec_update;
+    private int tsec_restore;
 
-    public SequenceVo(int tsec_clave, int tsec_codigo, String tsec_tabla, String tsec_fecha, int tsec_final, int tsec_update) {
+    public SequenceVo(int tsec_clave, int tsec_codigo, String tsec_tabla, String tsec_fecha, int tsec_final, int tsec_update, int tsec_restore) {
         this.tsec_clave = tsec_clave;
         this.tsec_codigo = tsec_codigo;
         this.tsec_tabla = tsec_tabla;
         this.tsec_fecha = tsec_fecha;
         this.tsec_final = tsec_final;
         this.tsec_update = tsec_update;
+        this.tsec_restore = tsec_restore;
     }
 
     public int getTsec_clave() {
@@ -42,5 +44,9 @@ public class SequenceVo implements Serializable {
 
     public int getTsec_update() {
         return tsec_update;
+    }
+
+    public int getTsec_restore() {
+        return tsec_restore;
     }
 }

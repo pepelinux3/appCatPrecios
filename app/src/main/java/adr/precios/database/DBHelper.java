@@ -358,11 +358,11 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void updateSeqUpdate(int noUpdate, int idSeq){
+    public void updateSeqRestore(int noUpdate, int idSeq){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues registro = new ContentValues();
-        registro.put("sec_update", noUpdate);
+        registro.put("sec_restore", noUpdate);
 
         db.update("secuencia", registro, " sec_clave = "+idSeq, null);
         db.close();
@@ -503,7 +503,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void updateDayInventory(List<StockInventoryVo> listInv) {
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
@@ -517,6 +516,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 registro.put("inv_ultimo", ob.getInvUltimo());
 
                 db.update("inventario", registro, " inv_art_clave = "+ob.getInvIdItem()+" and inv_suc_clave = "+ob.getInvIdBranch(), null);
+
+
             }
             System.out.println(" HELPER TERMINA DE HACER UPDATE INVENTARIO DIA ...................................");
             db.setTransactionSuccessful();
@@ -529,13 +530,13 @@ public class DBHelper extends SQLiteOpenHelper {
        // c = db.rawQuery("SELECT MAX(gru_clave) as gru_clave FROM grupos ", new String[]{});
         db = this.getWritableDatabase();
         c = db.rawQuery(" SELECT sec_clave, sec_codigo, sec_tabla,   " +
-                            "        sec_fecha, sec_final, sec_update "+
+                            "        sec_fecha, sec_final, sec_update, sec_restore "+
                             "   FROM secuencia ", new String[]{});
 
         ArrayList <SequenceVo> listSeq = new ArrayList<SequenceVo>();
 
         while (c.moveToNext()) {
-            listSeq.add(new SequenceVo(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getInt(4), c.getInt(5)));
+            listSeq.add(new SequenceVo(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3), c.getInt(4), c.getInt(5), c.getInt(6)));
         }
 
         return listSeq;

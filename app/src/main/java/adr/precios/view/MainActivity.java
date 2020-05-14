@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                     awsListSeq.add(new SequenceVo(JO.getInt("tsec_clave"), JO.getInt("tsec_codigo"),
                             JO.getString("tsec_tabla"), JO.getString("tsec_fecha"),
-                            JO.getInt("tsec_final"), JO.getInt("tsec_update")));
+                            JO.getInt("tsec_final"), JO.getInt("tsec_update"), JO.getInt("tsec_restore")));
                 }
                 checkSec_aws_sql_Group();
             }
@@ -111,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void awsResp_UpdateGroups(){
-        int awsUpdate_Group = awsListSeq.get(5).getTsec_update();
+        int awsRestore_Group = awsListSeq.get(5).getTsec_restore();
         int awsFinal_Group = awsListSeq.get(5).getTsec_final();
 
         dbHelper.openDataBase();
-        dbHelper.updateSeqUpdate(awsUpdate_Group, 6);
+        dbHelper.updateSeqRestore(awsRestore_Group, 6);
         dbHelper.close();
 
         dbHelper.openDataBase();
@@ -138,13 +138,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkSec_aws_sql_Group(){
-        int awsUpdate_Group = awsListSeq.get(5).getTsec_update();
-        int sqlUpdate_Group = sqlListSeq.get(5).getTsec_update();
+        int awsRestore_Group = awsListSeq.get(5).getTsec_restore();
+        int sqlRestore_Group = sqlListSeq.get(5).getTsec_restore();
 
         int awsFinal_IdGroup = awsListSeq.get(5).getTsec_final();
         int sqlFinal_IdGroup = sqlListSeq.get(5).getTsec_final();
 
-        if(awsUpdate_Group > sqlUpdate_Group){
+        if(awsRestore_Group > sqlRestore_Group){
             AwsAsync_Login task3 = new AwsAsync_Login(this);
             task3.execute(3);
         } else {

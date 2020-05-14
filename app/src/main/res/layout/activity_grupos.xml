@@ -6,8 +6,6 @@
     android:background="#202732"
     tools:context="adr.precios.view.GroupActivity">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,12 +22,34 @@
             </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content">
+
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
         android:visibility="gone"/>
+
+        <!---   style="?android:attr/progressBarStyleHorizontal"    -->
+        <!---   android:progressDrawable="@drawable/custom_progressbar"     -->
+
+        <TextView
+            android:id="@+id/txtProgress"
+            android:layout_width="wrap_content"
+            android:text="0 %"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </RelativeLayout>
 
 </RelativeLayout>
 

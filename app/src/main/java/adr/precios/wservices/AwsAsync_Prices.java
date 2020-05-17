@@ -2,6 +2,9 @@ package adr.precios.wservices;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.View;
 
@@ -17,7 +20,7 @@ import adr.precios.entities.SubgroupVo;
 import adr.precios.view.GroupActivity;
 import retrofit2.Call;
 
-public class AwsAsync_Prices extends AsyncTask <Void, Integer, Void> {
+public class AwsAsync_Prices extends AsyncTask <Void, Integer, String> {
     private WeakReference<GroupActivity> activityWeakReference;
     private int awsGruFinal, awsSubFinal, awsItemFinal, awsInvFinal;
     private int sqlGruFinal, sqlSubFinal, sqlItemFinal, sqlInvFinal;
@@ -64,45 +67,95 @@ public class AwsAsync_Prices extends AsyncTask <Void, Integer, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... Void) {
+    protected String doInBackground(Void... Void) {
+        boolean actualiza = false;
+        String mensaje = "";
+        GroupActivity activity = activityWeakReference.get();
 
         System.out.println("COMPARA RESTORE GRUPO aws = "+awsGruRestore+"  y  RESTORE sql =  "+sqlGruRestore+" **********************************************");
-        if(awsGruRestore > sqlGruRestore) {
+        if(awsGruRestore > sqlGruRestore) {     //    BLANCO
             System.out.println("Entra a update");
             restGroups();
-
+            actualiza = true;
         } else
             if (awsGruFinal > sqlGruFinal) {
                 System.out.println("Entra a grupos   ***************************************************************************");
                 newGroups();
+                actualiza = true;
             }
 
-        if(awsSubRestore > sqlSubRestore) {
+        if(awsSubRestore > sqlSubRestore) {    //    TURQUESA
             restSubgroups();
+            actualiza = true;
         } else
             if (awsSubFinal > sqlSubFinal) {
                 System.out.println("Entra a subgrupos  ***************************************************************************");
                 newSubgroups();
+                actualiza = true;
             }
 
         if(awsItemRestore > sqlItemRestore){
             restItems();
+            actualiza = true;
         } else
             if (awsItemFinal > sqlItemFinal) {
                 System.out.println("Entra a articulos   ***************************************************************************");
                 addUpdateItems();
+                actualiza = true;
             }
 
         if(awsInvRestore > sqlInvRestore){
             restInventory();
+            actualiza = true;
         } else
             if(awsInvFinal > sqlInvFinal){
                 System.out.println("Entra a inventario  final = "+sqlInvFinal+" ***************************************************************************");
                 updateInventory();
+                actualiza = true;
             }
 
-        return null;
+        if(actualiza)
+            mensaje = "Actualizacion terminada con exito";
+        else
+            mensaje = "No hay actualizaciones";
+
+        return mensaje;
     }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+
+        GroupActivity activity = activityWeakReference.get();
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        activity.txtProgress.setText(values[0]+" %");
+        activity.progressBar.setProgress(values[0]);
+    }
+
+    @Override
+    protected void onPostExecute(String msj) {
+
+        GroupActivity activity = activityWeakReference.get();
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        activity.progressBar.setVisibility(View.GONE);
+        activity.txtProgress.setVisibility(View.GONE);
+
+        activity.awsAsyncTaskFinish(msj);
+
+        activity.awsRunning = false;
+        activity.fillRecyclerView();
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
 
     private void sqlInsertGroups(List<GroupVo> listgroup, GroupActivity activity){
         int cont = 1;
@@ -434,8 +487,6 @@ public class AwsAsync_Prices extends AsyncTask <Void, Integer, Void> {
         }
     }
 
-
-
     private void updateInventory() {
         int cont = 1;
         GroupActivity activity = activityWeakReference.get();
@@ -475,38 +526,5 @@ public class AwsAsync_Prices extends AsyncTask <Void, Integer, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-
-        GroupActivity activity = activityWeakReference.get();
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-
-        activity.txtProgress.setText(values[0]+" %");
-
-        activity.progressBar.setProgress(values[0]);
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-
-        GroupActivity activity = activityWeakReference.get();
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-
-        activity.progressBar.setVisibility(View.GONE);
-        activity.txtProgress.setVisibility(View.GONE);
-
-        activity.awsRunning = false;
-        activity.fillRecyclerView();
-    }
-
-    @Override
-    protected void onCancelled() {
-        super.onCancelled();
     }
 }

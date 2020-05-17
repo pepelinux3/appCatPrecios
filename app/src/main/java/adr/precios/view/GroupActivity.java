@@ -1,9 +1,11 @@
 package adr.precios.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,7 +64,6 @@ public class GroupActivity extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         txtProgress = (TextView) findViewById(R.id.txtProgress);
 
-      //  checkAWS();
         awsRunning = false;
         Toast.makeText(this, "CREA ACTIVITI GRUPOS..", Toast.LENGTH_SHORT).show();
 
@@ -219,14 +220,19 @@ public class GroupActivity extends AppCompatActivity {
         }
 
         if(id == R.id.me_actualizar){
-            dbHelper.openDataBase();
-            sqlListSeq = dbHelper.getTableSequence();
-            dbHelper.close();
+            if (!awsRunning){
+                dbHelper.openDataBase();
+                sqlListSeq = dbHelper.getTableSequence();
+                dbHelper.close();
 
-            awsGetSequence();
+                progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                awsGetSequence();
 
-            System.out.println("Final INVENTARIO sql = "+sqlListSeq.get(0).getTsec_final()+"  aws = "+awsListSeq.get(0).getTsec_final()+" .......");
-            System.out.println("update INVENTARIO sql = "+sqlListSeq.get(0).getTsec_update()+"  aws = "+awsListSeq.get(0).getTsec_restore()+" .......");
+                System.out.println("Final INVENTARIO sql = "+sqlListSeq.get(0).getTsec_final()+"  aws = "+awsListSeq.get(0).getTsec_final()+" .......");
+                System.out.println("update INVENTARIO sql = "+sqlListSeq.get(0).getTsec_update()+"  aws = "+awsListSeq.get(0).getTsec_restore()+" .......");
+            } else {
+                Toast.makeText(GroupActivity.this, "hay una actualizacion en proceso", Toast.LENGTH_SHORT).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -243,6 +249,24 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
+    public void awsAsyncTaskFinish(String finis){
+        Toast.makeText(GroupActivity.this, finis, Toast.LENGTH_SHORT).show();
+
+        int drawable = R.drawable.ic_action_check;
+        msjUpdateDB(finis, drawable);
+    }
+
+    private void msjUpdateDB(String msj, int drawable){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(drawable);
+        builder.setTitle("Base de datos");
+        builder.setMessage(msj);
+        builder.setPositiveButton("OK", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void awsGetSequence (){
         servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
         Call<List<SequenceVo>> respon_sequence = service.getSeqUpdate();
@@ -250,6 +274,7 @@ public class GroupActivity extends AppCompatActivity {
         respon_sequence.enqueue(new Callback<List<SequenceVo>>() {
             @Override
             public void onResponse(Call<List<SequenceVo>> call, Response<List<SequenceVo>> response) {
+
                 if(response.isSuccessful()){
 
                     ArrayList <SequenceVo> listSeq = new ArrayList<SequenceVo>();
@@ -259,11 +284,12 @@ public class GroupActivity extends AppCompatActivity {
 
                     awsListSeq = listSeq;
 
-                    System.out.println("**** SECUENCIA = "+awsListSeq.get(5).getTsec_restore());
-
-                    awsInventory = new AwsAsync_Prices(GroupActivity.this);
-                    awsInventory.execute();
-
+                    if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()  || awsListSeq.get(0).getTsec_update() > awsListSeq.get(0).getTsec_update()){
+                        awsInventory = new AwsAsync_Prices(GroupActivity.this);
+                        awsInventory.execute();
+                    } else {
+                        msjUpdateDB("Los inventarios ya estan actualizado", R.drawable.ic_action_info);
+                    }
 
                 } else{
                     Toast.makeText(GroupActivity.this, "Falla response secuencia", Toast.LENGTH_SHORT).show();

@@ -6,4 +6,5 @@
 
     <color name="colorWhiteApp">#ffffff</color>
     <color name="colorGreenApp">#4CAF50</color>
+    <color name="alertColor">#2196F3</color>
 </resources>

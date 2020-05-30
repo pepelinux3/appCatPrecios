@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServGenerator_AWS {
 
-    private static final String BASE_URL = "http://ec2-34-224-93-42.compute-1.amazonaws.com:8080/";
+    private static final String BASE_URL = "http://ec2-3-88-184-169.compute-1.amazonaws.com:8080/";
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()

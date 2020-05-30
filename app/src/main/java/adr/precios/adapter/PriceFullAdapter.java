@@ -17,23 +17,25 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import adr.precios.entities.PriceVo;
+import adr.precios.entities.ActiPriceVo;
 
 public class PriceFullAdapter
         extends RecyclerView.Adapter<PriceFullAdapter.ViewHolderFull>
         implements Filterable {
 
-    List<PriceVo> listItemFull;
-    List<PriceVo> listItemFullComplet;
+    List<ActiPriceVo> listItemFull;
+    List<ActiPriceVo> listItemFullComplet;
 
     String recyNoParte;
+    int recIdItem;
 
-    public PriceFullAdapter(ArrayList<PriceVo> listItemFull){
+    public PriceFullAdapter(ArrayList<ActiPriceVo> listItemFull){
         this.listItemFull = listItemFull;
         listItemFullComplet = new ArrayList<>(listItemFull);
     }
 
     public String getNoParteAdapter() { return recyNoParte; }
+    public int getIdItem() { return recIdItem; }
 
     @NonNull
     @Override
@@ -55,7 +57,13 @@ public class PriceFullAdapter
         holder.tvFullSubGrupo.setText(listItemFull.get(i).getSubgItem());
         holder.tvFullDescripcion.setText(listItemFull.get(i).getDesItem());
         holder.tvFullDate.setText(listItemFull.get(i).getDateItem());
-        holder.tvFullPrice.setText(precision.format(listItemFull.get(i).getPriItem()));
+
+        if(listItemFull.get(i).getPriItem() == -999){
+            holder.tvFullPrice.setText("****");
+        } else{
+            holder.tvFullPrice.setText(precision.format(listItemFull.get(i).getPriItem()));
+        }
+
     }
 
     @Override
@@ -71,14 +79,14 @@ public class PriceFullAdapter
     private  Filter listFilterPriceFull = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<PriceVo> filteredList = new ArrayList<>();
+            List<ActiPriceVo> filteredList = new ArrayList<>();
 
             if(constraint == null || constraint.length() == 0){
                 filteredList.addAll(listItemFullComplet);
             } else{
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for(PriceVo onePrice: listItemFullComplet){
+                for(ActiPriceVo onePrice: listItemFullComplet){
                     if(onePrice.getNoItem().toLowerCase().contains(filterPattern)){
                         filteredList.add(onePrice);
                     }else{
@@ -137,8 +145,11 @@ public class PriceFullAdapter
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             recyNoParte = "";
+            recIdItem = 0;
 
             recyNoParte = listItemFull.get(this.getAdapterPosition()).getNoItem();
+            recIdItem = listItemFull.get(this.getAdapterPosition()).getIdItem();
+
             menu.add(this.getAdapterPosition(), 1, 0, "Existencia");
             menu.add(this.getAdapterPosition(), 2, 0, "Imagen");
         }

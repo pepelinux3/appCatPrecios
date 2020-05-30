@@ -10,9 +10,10 @@ public class ItemVo {
     private int idSubgrupo;
     private int status;
     private int visible;
+    private float impuesto;
     private int modifica;
 
-    public ItemVo(int idClave, String noParte, String nomCorto, String nomLargo, int idEmpresa, int idSubgrupo, int status, int visible, int modifica) {
+    public ItemVo(int idClave, String noParte, String nomCorto, String nomLargo, int idEmpresa, int idSubgrupo, int status, int visible, float impuesto, int modifica) {
         this.idClave = idClave;
         this.noParte = noParte;
         this.nomCorto = nomCorto;
@@ -21,6 +22,7 @@ public class ItemVo {
         this.idSubgrupo = idSubgrupo;
         this.status = status;
         this.visible = visible;
+        this.impuesto = impuesto;
         this.modifica = modifica;
     }
 
@@ -54,6 +56,10 @@ public class ItemVo {
 
     public int getVisible() {
         return visible;
+    }
+
+    public float getImpuesto() {
+        return impuesto;
     }
 
     public int getModifica() {

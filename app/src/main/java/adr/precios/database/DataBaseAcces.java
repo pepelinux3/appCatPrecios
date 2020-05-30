@@ -11,7 +11,7 @@ import com.example.adrprecios.R;
 import java.util.ArrayList;
 
 import adr.precios.entities.GroupVo;
-import adr.precios.entities.PriceVo;
+import adr.precios.entities.ActiPriceVo;
 
 
 public class DataBaseAcces {
@@ -20,8 +20,8 @@ public class DataBaseAcces {
     private static DataBaseAcces instance;
 
     ArrayList <GroupVo> grupos;
-    ArrayList <PriceVo> Item;
-    ArrayList <PriceVo> ItemFull;
+    ArrayList <ActiPriceVo> Item;
+    ArrayList <ActiPriceVo> ItemFull;
 
     Cursor c = null;
 
@@ -96,7 +96,7 @@ public class DataBaseAcces {
 
     // *****************************************************************************************************************
 
-    public ArrayList<PriceVo> getPriceItem(String idGrupo, String idBranch){
+    public ArrayList<ActiPriceVo> getPriceItem(String idGrupo, String idBranch){
         int clave_subg = 0;
         c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
                              "      lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
@@ -112,21 +112,21 @@ public class DataBaseAcces {
                              "   and subg_gru_clave = "+idGrupo+" "+
                              " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
-        Item = new ArrayList<PriceVo>();
+        Item = new ArrayList<ActiPriceVo>();
 
         while (c.moveToNext()){
             if(clave_subg != c.getInt(5)){
-                Item.add(new PriceVo(0, "", "", c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
+                Item.add(new ActiPriceVo(0, "", "", c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
                 clave_subg = c.getInt(5);
             }
 
-            Item.add(new PriceVo(c.getInt(0), "", "", c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
+            Item.add(new ActiPriceVo(c.getInt(0), "", "", c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
         }
 
         return Item;
     }
 
-    public ArrayList<PriceVo> getPriceItemFull(String idBranch){
+    public ArrayList<ActiPriceVo> getPriceItemFull(String idBranch){
         c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
                             "       art_nombrelargo, lisd_fecha, lisd_precio "+
                             "  FROM articulos, listapreciosdetalle, subgrupos, grupos, "+
@@ -141,10 +141,10 @@ public class DataBaseAcces {
                             "   and suc_clave = "+idBranch+
                             " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
-        ItemFull = new ArrayList<PriceVo>();
+        ItemFull = new ArrayList<ActiPriceVo>();
 
         while (c.moveToNext()){
-            ItemFull.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5),   c.getFloat(6)));
+            ItemFull.add(new ActiPriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5),   c.getFloat(6)));
         }
 
         return ItemFull;

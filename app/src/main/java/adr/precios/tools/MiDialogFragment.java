@@ -25,12 +25,14 @@ public class MiDialogFragment extends DialogFragment {
 
     RecyclerView recyclerExist;
     ExistAdapter existAdapter;
-    TextView edNoParte;
+    TextView edNoParte, edFecha;
 
     String noItem;
+    boolean aws;
 
-    public void setValue(String noItem) {
+    public void setValue(String noItem, boolean aws) {
         this.noItem = noItem;
+        this.aws = aws;
     }
 
     @Nullable
@@ -41,6 +43,8 @@ public class MiDialogFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.dialogfrag_exist3, container);
 
         edNoParte = (TextView) rootView.findViewById(R.id.fragNoparte);
+        edFecha = (TextView) rootView.findViewById(R.id.fragFecha);
+
         edNoParte.setText(noItem);
 
         //  RECYCLER
@@ -54,6 +58,18 @@ public class MiDialogFragment extends DialogFragment {
         recyclerExist.setAdapter(existAdapter);
 
         dbHelper.close();
+
+        if(aws == true){
+            edNoParte.setTextColor(Color.GREEN);
+            edFecha.setText("");
+        } else{
+            dbHelper.openDataBase();
+            String fecha_hora = dbHelper.getSeqDateTime();
+            dbHelper.close();
+
+            edNoParte.setTextColor(Color.RED);
+            edFecha.setText("  "+fecha_hora);
+        }
 
         this.getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         //this.getDialog().setTitle("Existencia");

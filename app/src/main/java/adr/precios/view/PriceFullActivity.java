@@ -16,9 +16,18 @@ import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.PriceFullAdapter;
+import adr.precios.entities.StockInventoryVo;
 import adr.precios.tools.MiDialogFragment;
+import adr.precios.wservices.ServGenerator_AWS;
+import adr.precios.wservices.servicesGroup;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class PriceFullActivity extends AppCompatActivity {
@@ -26,6 +35,7 @@ public class PriceFullActivity extends AppCompatActivity {
     private RecyclerView recyclerPricesFull;
     private Toolbar toolbarPriceFull;
     private PriceFullAdapter priceFullAdapter;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +48,7 @@ public class PriceFullActivity extends AppCompatActivity {
        //  DataBaseAcces databaseAcces = DataBaseAcces.getInstance(getApplicationContext());
        //  databaseAcces.open();
 
-        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper = new DBHelper(getApplicationContext());
         dbHelper.openDataBase();
 
         String idBranch = getIntent().getStringExtra("branchId");
@@ -55,10 +65,10 @@ public class PriceFullActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
-    private void accesActivityExistencia (String recyNoItem){
+    private void accesActivityExistencia (String recyNoItem, boolean aws){
         MiDialogFragment myDialogFragment = new MiDialogFragment();
 
-        myDialogFragment.setValue(recyNoItem);
+        myDialogFragment.setValue(recyNoItem, aws);
         myDialogFragment.show(getSupportFragmentManager(), "MyFragment");
     }
 
@@ -108,8 +118,9 @@ public class PriceFullActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case 1:
                 Toast.makeText(this, "Ver Existencia", Toast.LENGTH_SHORT).show();
+                awsUpdateExist();
                 // accesActivityExistencia ();
-                accesActivityExistencia(priceFullAdapter.getNoParteAdapter());
+               // accesActivityExistencia(priceFullAdapter.getNoParteAdapter(), aws);
                 return true;
 
             case 2:
@@ -119,5 +130,41 @@ public class PriceFullActivity extends AppCompatActivity {
 
             default: return super.onContextItemSelected(item);
         }
+    }
+
+    private void awsUpdateExist(){
+       // System.out.println("articulo existencia = "+priceFullAdapter.getIdItem()+"   xxxxxxxxxxxxxxx");
+
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        Call<List<StockInventoryVo>> respon_updateExist = service.getNoPartInvent(priceFullAdapter.getIdItem());
+
+        respon_updateExist.enqueue(new Callback<List<StockInventoryVo>>() {
+            @Override
+            public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
+                System.out.println("ENTRA A AWS DE EXISTENCIAS ...................................");
+                boolean aws;
+                if(response.isSuccessful()){
+                    ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
+
+                    for(StockInventoryVo ob: response.body()){
+                        listInv.add(ob);
+                    }
+
+                    dbHelper.updateDayInventory(listInv);
+                    aws = true;
+                } else{
+                    Toast.makeText(PriceFullActivity.this, "error al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
+                    aws = false;
+                }
+
+                accesActivityExistencia(priceFullAdapter.getNoParteAdapter(), aws);
+            }
+
+            @Override
+            public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
+                accesActivityExistencia(priceFullAdapter.getNoParteAdapter(), false);
+                Toast.makeText(PriceFullActivity.this, "Falla al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

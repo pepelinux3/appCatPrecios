@@ -4,6 +4,7 @@ import java.util.List;
 
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.ItemVo;
+import adr.precios.entities.PriceVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
@@ -44,8 +45,12 @@ public interface servicesGroup {
     @GET("RESTadrimar/webresources/inventory/editem/{id}")
     Call<List<ItemVo>> getNewItems(@Path("id") int idLastItem);
 
-    @GET("RESTadrimar/webresources/inventory/newinv/{id}")
-    Call<List<StockInventoryVo>> getNewInv(@Path("id") int idLastInv);
+
+    @GET("RESTadrimar/webresources/inventory/allprice")
+    Call<List<PriceVo>> getAllPrice();
+
+    @GET("RESTadrimar/webresources/inventory/newprice/{id}")
+    Call<List<PriceVo>> getNewPrice(@Path("id") int idLastPrice);
 
 
     @GET("RESTadrimar/webresources/inventory/allinv")

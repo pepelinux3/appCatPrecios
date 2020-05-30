@@ -23,7 +23,7 @@ import adr.precios.entities.ItemVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.entities.StockBranchVo;
 import adr.precios.entities.GroupVo;
-import adr.precios.entities.PriceVo;
+import adr.precios.entities.ActiPriceVo;
 import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 
@@ -42,9 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList <GroupVo> grupos;
 
-    private ArrayList <PriceVo> Item;
+    private ArrayList <ActiPriceVo> Item;
     private ArrayList <StockBranchVo> stockBranch;
-    private ArrayList <PriceVo> ItemFull;
+    private ArrayList <ActiPriceVo> ItemFull;
 
     Cursor c = null;
 
@@ -228,34 +228,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return grupos;
     }
 
-    // ******************************************************************************************************************
-    // *****************************************************************************************************************
-
-    /*
-        c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha,  " +
-                "      lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
-                " FROM articulos, listapreciosdetalle, subgrupos, " +
-                "      sucursales, listapreciosEncabezado "+
-                " WHERE lisd_art_clave = art_clave "+
-                "   and lisd_lise_clave = lise_clave"+
-                "   and art_subg_clave = subg_clave "+
-                "   and suc_emp_clave = art_emp_clave"+
-                "   and suc_lise_clave = lise_clave" +
-                "   and suc_clave = "+idBranch+
-                "   and subg_gru_clave = "+idGrupo+" "+
-                " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
-    */
-
-    public ArrayList<PriceVo> getPriceItem(String idGrupo, String idBranch){
+    public ArrayList<ActiPriceVo> getPriceItem(String idGrupo, String idBranch){
         int clave_subg = 0;
 
-        /*
-        IFNULL(lisd_fecha, '2021-04-19') as lisd_fecha,
-	   IFNULL(lisd_precio, 333.33) as lisd_precio,
-         */
-
         c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha, "+
-                        "       IFNULL(lisd_precio, 0) as lisd_precio, subg_clave, subg_nombre, subg_descripcion "+
+                        "       IFNULL(art_impuesto * lisd_precio, -999) , subg_clave, subg_nombre, subg_descripcion "+
                         "  FROM subgrupos, sucursales, listapreciosEncabezado, "+
 					    "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
 					    "   and lisd_lise_clave = lise_clave "+
@@ -266,39 +243,23 @@ public class DBHelper extends SQLiteOpenHelper {
                         "   and subg_gru_clave = "+idGrupo+
                         " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
-        Item = new ArrayList<PriceVo>();
+        Item = new ArrayList<ActiPriceVo>();
 
         while (c.moveToNext()){
             if(clave_subg != c.getInt(5)){
-                Item.add(new PriceVo(0, "", "", c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
+                Item.add(new ActiPriceVo(0, "", "", c.getString(1), c.getString(6)+" "+c.getString(7), "",0));
                 clave_subg = c.getInt(5);
             }
 
-            Item.add(new PriceVo(c.getInt(0), "", "", c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
+            Item.add(new ActiPriceVo(c.getInt(0), "", "", c.getString(1), c.getString(2), c.getString(3),  c.getFloat(4)));
         }
 
         return Item;
     }
 
-    /*
-          c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
-                "       art_nombrelargo, lisd_fecha, lisd_precio "+
-                "  FROM articulos, listapreciosdetalle, subgrupos, grupos, "+
-                "       listapreciosEncabezado, sucursales"+
-                " WHERE lisd_art_clave = art_clave "+
-                "   and art_subg_clave = subg_clave "+
-                "   and subg_gru_clave = gru_clave "+
-                "   and suc_lise_clave = lise_clave"+
-                "   and art_emp_clave = suc_emp_clave "+
-                "   and lisd_lise_clave = lise_clave"+
-                "   and suc_clave = "+idBranch+
-                " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
-     */
-
-    // **************************************************************************************************************
-    public ArrayList<PriceVo> getPriceItemFull(String idBranch){
+    public ArrayList<ActiPriceVo> getPriceItemFull(String idBranch){
         c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
-                "       art_nombrelargo, lisd_fecha, IFNULL(lisd_precio, 0) as lisd_precio "+
+                "       art_nombrelargo, lisd_fecha, IFNULL(art_impuesto * lisd_precio, -999) "+
                 "  FROM subgrupos, grupos, listapreciosEncabezado, sucursales, "+
                 "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
                 "   and lisd_lise_clave = lise_clave "+
@@ -309,10 +270,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "   and suc_clave = "+idBranch+
                 " ORDER BY subg_nombre, art_clavearticulo", new String[]{});
 
-        ItemFull = new ArrayList<PriceVo>();
+        ItemFull = new ArrayList<ActiPriceVo>();
 
         while (c.moveToNext()){
-            ItemFull.add(new PriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5),   c.getFloat(6)));
+            ItemFull.add(new ActiPriceVo(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5),   c.getFloat(6)));
         }
 
         return ItemFull;
@@ -382,6 +343,19 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateSeqDateTime(String date, String time){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues registro = new ContentValues();
+
+        registro.put("sec_fecha", date);
+        db.update("secuencia", registro, " sec_clave = 1", null);
+
+        registro.put("sec_hora", time);
+        db.update("secuencia", registro, " sec_clave = 1", null);
+
+        db.close();
+    }
 
     public void deleteTableData(String nameTable) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -479,7 +453,22 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void addInventory(List<StockInventoryVo> listInv) {
+    public void addInventory(int idItem) {
+        try {
+            String qry = " INSERT INTO inventario (inv_art_clave, inv_suc_clave, inv_existencia) " +
+                    " SELECT art_clave, suc_clave, 0 FROM sucursales, articulos " +
+                    "   WHERE art_emp_clave = suc_emp_clave and art_clave = " + idItem;
+
+            SQLiteDatabase db = getWritableDatabase();
+            db.execSQL(qry);
+
+        } catch (Exception e){
+            System.out.println("no se puede ejecutar sql xxxxxxxxxxxxx"+e);
+            Log.e("MYDB", "UPDATE fallo",e);
+        }
+    }
+
+    public void addInventory2(List<StockInventoryVo> listInv) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
@@ -540,6 +529,21 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return listSeq;
+    }
+
+    public String getSeqDateTime() {
+        //db = this.getWritableDatabase();
+        c = db.rawQuery("SELECT (sec_fecha || ', ' || sec_hora) as fechahora " +
+                            " FROM secuencia  WHERE sec_clave = 1 " , new String[]{});
+
+        StringBuffer buffer = new StringBuffer();
+
+        while (c.moveToNext()) {
+            String user = c.getString(0);
+            buffer.append("" + user);
+        }
+
+        return buffer.toString();
     }
 
     public void updateInventory (List <StockInventoryVo> listinv) {

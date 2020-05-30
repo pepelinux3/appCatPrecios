@@ -1,67 +1,65 @@
 package adr.precios.entities;
 
 public class PriceVo {
+    int tpri_id;
+    float tpri_precio;
+    String tpri_fecha;
+    int tpri_lista;
+    int tpri_articulo;
+    int tpri_ultimo;
 
-    private int idItem;
-    private String noItem;
-    private String desItem;
-    private String dateItem;
-    private String gruItem;
-    private String subgItem;
-    private float priItem;
-
-    public PriceVo(int idItem, String gruItem, String subgItem, String noItem, String desItem, String dateItem, float priItem) {
-        this.idItem = idItem;
-        this.gruItem = gruItem;
-        this.subgItem = subgItem;
-        this.noItem = noItem;
-        this.desItem = desItem;
-        this.dateItem = dateItem;
-        this.priItem = priItem;
+    public PriceVo() {
     }
 
-    public int getIdItem() { return idItem; }
-    public void setIdItem(int idItem) {
-        this.idItem = idItem;
+    public PriceVo(int tpri_id, float tpri_precio, String tpri_fecha, int tpri_lista, int tpri_articulo, int tpri_ultimo) {
+        this.tpri_id = tpri_id;
+        this.tpri_precio = tpri_precio;
+        this.tpri_fecha = tpri_fecha;
+        this.tpri_lista = tpri_lista;
+        this.tpri_articulo = tpri_articulo;
+        this.tpri_ultimo = tpri_ultimo;
     }
 
-    public String getGruItem() {
-        return gruItem;
+    public int getTpri_id() {
+        return tpri_id;
     }
-    public void setGruItem(String gruItem) { this.gruItem = gruItem; }
-
-    public String getSubgItem() {
-        return subgItem;
-    }
-    public void setSubgItem(String subgItem) {
-        this.subgItem = subgItem;
+    public void setTpri_id(int tpri_id) {
+        this.tpri_id = tpri_id;
     }
 
-    public String getNoItem() {
-        return noItem;
+    public float getTpri_precio() {
+        return tpri_precio;
     }
-    public void setNoItem(String noItem) {
-        this.noItem = noItem;
-    }
-
-    public String getDesItem() {
-        return desItem;
-    }
-    public void setDesItem(String desItem) {
-        this.desItem = desItem;
+    public void setTpri_precio(float tpri_precio) {
+        this.tpri_precio = tpri_precio;
     }
 
-    public String getDateItem() {
-        return dateItem;
+    public String getTpri_fecha() {
+        return tpri_fecha;
     }
-    public void setDateItem(String dateItem) {
-        this.dateItem = dateItem;
+    public void setTpri_fecha(String tpri_fecha) {
+        this.tpri_fecha = tpri_fecha;
     }
 
-    public float getPriItem() {
-        return priItem;
+    public int getTpri_lista() {
+        return tpri_lista;
     }
-    public void setPriItem(float priItem) {
-        this.priItem = priItem;
+    public void setTpri_lista(int tpri_lista) {
+        this.tpri_lista = tpri_lista;
     }
+
+    public int getTpri_articulo() {
+        return tpri_articulo;
+    }
+    public void setTpri_articulo(int tpri_articulo) {
+        this.tpri_articulo = tpri_articulo;
+    }
+
+    public int getTpri_ultimo() {
+        return tpri_ultimo;
+    }
+    public void setTpri_ultimo(int tpri_ultimo) {
+        this.tpri_ultimo = tpri_ultimo;
+    }
+
 }

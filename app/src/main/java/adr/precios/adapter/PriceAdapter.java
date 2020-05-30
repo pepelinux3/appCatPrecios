@@ -11,7 +11,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.adrprecios.R;
 
@@ -19,20 +18,20 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import adr.precios.entities.PriceVo;
+import adr.precios.entities.ActiPriceVo;
 
 
 public class PriceAdapter
         extends RecyclerView.Adapter<PriceAdapter.ViewHolderDatos>
         implements Filterable {
 
-    List<PriceVo> listItems;
-    List<PriceVo> listItemComplet;
+    List<ActiPriceVo> listItems;
+    List<ActiPriceVo> listItemComplet;
 
     String recyNoParte;
     int recIdItem;
 
-    public PriceAdapter(ArrayList<PriceVo> listItems){
+    public PriceAdapter(ArrayList<ActiPriceVo> listItems){
         this.listItems = listItems;
         listItemComplet = new ArrayList<>(listItems);
     }
@@ -64,7 +63,13 @@ public class PriceAdapter
             holder.tvDeArticulo.setText("");
         }
         else{
-            holder.tvPrArticulo.setText(precision.format(listItems.get(i).getPriItem()));
+            if(listItems.get(i).getPriItem() == -999){
+                holder.tvPrArticulo.setText("****");
+            } else{
+                holder.tvPrArticulo.setText(precision.format(listItems.get(i).getPriItem()));
+            }
+
+           // holder.tvPrArticulo.setText(precision.format(listItems.get(i).getPriItem()));
             holder.ivPesos.setImageResource(R.drawable.moneda);
             holder.tvNoArticulo.setText(listItems.get(i).getNoItem());
             holder.tvSuArticulo.setText("");
@@ -86,14 +91,14 @@ public class PriceAdapter
     private Filter listFilterPrice = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<PriceVo> filteredList = new ArrayList<>();
+            List<ActiPriceVo> filteredList = new ArrayList<>();
 
             if(constraint == null || constraint.length() == 0){
                 filteredList.addAll(listItemComplet);
             } else{
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for(PriceVo onePrice: listItemComplet){
+                for(ActiPriceVo onePrice: listItemComplet){
                     if(onePrice.getNoItem().toLowerCase().contains(filterPattern)){
                         filteredList.add(onePrice);
                     }else

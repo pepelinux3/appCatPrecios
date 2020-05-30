@@ -76,10 +76,10 @@ public class PriceActivity extends AppCompatActivity {
         startActivity(activityImagen);
     }
 
-    private void accesActivityExistencia (String recyNoItem){
+    private void accesActivityExistencia (String recyNoItem, boolean aws){
         MiDialogFragment myDialogFragment = new MiDialogFragment();
 
-        myDialogFragment.setValue(recyNoItem);
+        myDialogFragment.setValue(recyNoItem, aws);
         myDialogFragment.show(getSupportFragmentManager(), "MyFragment");
     }
 
@@ -198,6 +198,7 @@ public class PriceActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<StockInventoryVo>> call, Response<List<StockInventoryVo>> response) {
                 System.out.println("ENTRA A AWS DE EXISTENCIAS ...................................");
+                boolean aws;
                 if(response.isSuccessful()){
                     ArrayList<StockInventoryVo> listInv = new ArrayList<StockInventoryVo>();
 
@@ -206,16 +207,18 @@ public class PriceActivity extends AppCompatActivity {
                     }
 
                     dbHelper.updateDayInventory(listInv);
+                    aws = true;
                 } else{
                     Toast.makeText(PriceActivity.this, "error al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
+                    aws = false;
                 }
 
-                accesActivityExistencia(priceAdapter.getNoParteAdapter());
+                accesActivityExistencia(priceAdapter.getNoParteAdapter(), aws);
             }
 
             @Override
             public void onFailure(Call<List<StockInventoryVo>> call, Throwable t) {
-                accesActivityExistencia(priceAdapter.getNoParteAdapter());
+                accesActivityExistencia(priceAdapter.getNoParteAdapter(), false);
                 Toast.makeText(PriceActivity.this, "Falla al actualizar Inventario existencia", Toast.LENGTH_SHORT).show();
             }
         });

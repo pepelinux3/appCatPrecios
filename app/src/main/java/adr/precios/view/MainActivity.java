@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         act_grupos.putExtra("awsList", (Serializable) awsListSeq);
         act_grupos.putExtra("sqlList", (Serializable) sqlListSeq);
         act_grupos.putExtra("noBranch", idBranch);
+        act_grupos.putExtra("startPrices", true);
 
         startActivity(act_grupos);
     }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
+import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,8 +24,12 @@ import android.widget.Toast;
 import com.example.adrprecios.R;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import adr.precios.database.DBHelper;
 import adr.precios.adapter.GruopAdapter;
@@ -54,6 +59,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private AwsAsync_Prices awsInventory;
     public boolean awsRunning;
+    public boolean startAWSPrices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +76,43 @@ public class GroupActivity extends AppCompatActivity {
         sqlListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("sqlList");
         awsListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("awsList");
 
+        startAWSPrices = getIntent().getExtras().getBoolean("startPrices");
+
+        if (savedInstanceState != null) {
+            startAWSPrices = savedInstanceState.getBoolean("awsStart");
+        }
+
         setUpToolBar();
         setUpHomeUpIconAndColor(R.drawable.ic_search, R.color.colorWhiteApp);
         fillRecyclerView();
+
+        if(startAWSPrices == true){
+
+            if(awsListSeq.get(1).getTsec_final() > sqlListSeq.get(1).getTsec_final()  || awsListSeq.get(1).getTsec_restore() > awsListSeq.get(1).getTsec_restore()){
+                progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                txtProgress.setTextColor(Color.GREEN);
+
+                awsInventory = new AwsAsync_Prices(GroupActivity.this);
+                awsInventory.execute(1);
+
+                Toast.makeText(this, "termina actualizar precios", Toast.LENGTH_SHORT).show();
+            }
+
+            Toast.makeText(this, "es true", Toast.LENGTH_SHORT).show();
+            startAWSPrices = false;
+        } else {
+            Toast.makeText(this, "es false", Toast.LENGTH_SHORT).show();
+        }
     }
 
-   // CountDownTimer timer = new CountDownTimer(240 * 60 * 1000, 1000) {
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        outState.putBoolean("awsStart", startAWSPrices);
+    }
+
+    // CountDownTimer timer = new CountDownTimer(240 * 60 * 1000, 1000) {
         CountDownTimer timer = new CountDownTimer(  240 * 60 * 1000, 1000) {
         public void onTick(long millisUntilFinished) {
             //Some code
@@ -226,6 +263,8 @@ public class GroupActivity extends AppCompatActivity {
                 dbHelper.close();
 
                 progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                txtProgress.setTextColor(Color.RED);
+
                 awsGetSequence();
 
                 System.out.println("Final INVENTARIO sql = "+sqlListSeq.get(0).getTsec_final()+"  aws = "+awsListSeq.get(0).getTsec_final()+" .......");
@@ -284,9 +323,9 @@ public class GroupActivity extends AppCompatActivity {
 
                     awsListSeq = listSeq;
 
-                    if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()  || awsListSeq.get(0).getTsec_update() > awsListSeq.get(0).getTsec_update()){
+                    if(awsListSeq.get(0).getTsec_final() > sqlListSeq.get(0).getTsec_final()  || awsListSeq.get(0).getTsec_restore() > awsListSeq.get(0).getTsec_restore()){
                         awsInventory = new AwsAsync_Prices(GroupActivity.this);
-                        awsInventory.execute();
+                        awsInventory.execute(2);
                     } else {
                         msjUpdateDB("Los inventarios ya estan actualizado", R.drawable.ic_action_info);
                     }

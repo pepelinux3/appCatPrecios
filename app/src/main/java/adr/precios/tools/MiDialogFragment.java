@@ -61,14 +61,14 @@ public class MiDialogFragment extends DialogFragment {
 
         if(aws == true){
             edNoParte.setTextColor(Color.GREEN);
-            edFecha.setText("");
+            edFecha.setVisibility(View.GONE);
         } else{
             dbHelper.openDataBase();
             String fecha_hora = dbHelper.getSeqDateTime();
             dbHelper.close();
 
             edNoParte.setTextColor(Color.RED);
-            edFecha.setText("  "+fecha_hora);
+            edFecha.setText("Ult. Act. "+fecha_hora);
         }
 
         this.getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

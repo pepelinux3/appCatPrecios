@@ -87,7 +87,6 @@ public class GroupActivity extends AppCompatActivity {
         fillRecyclerView();
 
         if(startAWSPrices == true){
-
             if(awsListSeq.get(1).getTsec_final() > sqlListSeq.get(1).getTsec_final()  || awsListSeq.get(1).getTsec_restore() > awsListSeq.get(1).getTsec_restore()){
                 progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 txtProgress.setTextColor(Color.GREEN);
@@ -97,11 +96,7 @@ public class GroupActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "termina actualizar precios", Toast.LENGTH_SHORT).show();
             }
-
-            Toast.makeText(this, "es true", Toast.LENGTH_SHORT).show();
             startAWSPrices = false;
-        } else {
-            Toast.makeText(this, "es false", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -139,8 +134,6 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        Toast.makeText(this, "SALIR....", Toast.LENGTH_SHORT).show();
 
         if(awsRunning){
             awsInventory.cancel(true);

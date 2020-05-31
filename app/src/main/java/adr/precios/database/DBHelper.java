@@ -281,7 +281,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // *****************************************************************************************************************
     public ArrayList<StockBranchVo> getInventory(String noItem){
-        c = db.rawQuery("SELECT suc_clave, suc_nombreCorto, inv_existencia, IFNULL(lisd_precio, 0) as lisd_precio " +
+        c = db.rawQuery("SELECT suc_clave, suc_nombreCorto, inv_existencia, IFNULL(lisd_precio * art_impuesto, 0) as lisd_precio " +
                 "  FROM sucursales, inventario, listapreciosEncabezado,  " +
                 "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
                 "   and lisd_lise_clave = lise_clave "+
@@ -533,7 +533,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public String getSeqDateTime() {
         //db = this.getWritableDatabase();
-        c = db.rawQuery("SELECT (sec_fecha || ', ' || sec_hora) as fechahora " +
+        c = db.rawQuery("SELECT (sec_fecha || '   ' || sec_hora) as fechahora " +
                             " FROM secuencia  WHERE sec_clave = 1 " , new String[]{});
 
         StringBuffer buffer = new StringBuffer();

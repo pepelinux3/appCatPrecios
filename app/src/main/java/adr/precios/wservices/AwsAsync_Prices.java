@@ -665,7 +665,7 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
             activity.dbHelper.updateSeqFinal(awsInvFinal, 1);
             activity.dbHelper.close();
 
-            String currTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            String currTime = new SimpleDateFormat("HH:mm a", Locale.getDefault()).format(new Date());
             String currDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
             activity.dbHelper.openDataBase();

@@ -4,6 +4,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+//  https://www.youtube.com/watch?v=LVK1H7_EHK4     POST Android
+//  https://www.youtube.com/watch?v=E8OXH0sMqEw     POST Android mejor
 
 public class ServGenerator_AWS {
 

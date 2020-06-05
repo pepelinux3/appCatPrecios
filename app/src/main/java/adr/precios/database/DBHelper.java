@@ -290,7 +290,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 "   and inv_art_clave = art_clave "+
                 "   and art_clavearticulo = '"+noItem+"'"+
-                "   and suc_status = 1 and art_listavisible = 1"+
+                "   and suc_status = 1"+
                 " ORDER BY suc_nombreCorto", new String[]{});
 
         stockBranch = new ArrayList<StockBranchVo>();

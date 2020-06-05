@@ -2,6 +2,7 @@ package adr.precios.wservices;
 
 import java.util.List;
 
+import adr.precios.entities.BlogVo;
 import adr.precios.entities.GroupVo;
 import adr.precios.entities.ItemVo;
 import adr.precios.entities.PriceVo;
@@ -10,7 +11,9 @@ import adr.precios.entities.StockInventoryVo;
 import adr.precios.entities.SubgroupVo;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface servicesGroup {
@@ -61,5 +64,9 @@ public interface servicesGroup {
 
     @GET("RESTadrimar/webresources/inventory/noparte/{id}")
     Call<List<StockInventoryVo>> getNoPartInvent(@Path("id") int idItem);
+
+
+    @POST("RESTadrimar/webresources/inventory/newblog")
+    Call<BlogVo> saveBlog(@Body BlogVo blogvo);
 
 }

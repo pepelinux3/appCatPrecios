@@ -71,7 +71,6 @@ public class GroupActivity extends AppCompatActivity {
         txtProgress = (TextView) findViewById(R.id.txtProgress);
 
         awsRunning = false;
-        Toast.makeText(this, "CREA ACTIVITI GRUPOS..", Toast.LENGTH_SHORT).show();
 
         sqlListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("sqlList");
         awsListSeq = (ArrayList<SequenceVo>)getIntent().getExtras().getSerializable("awsList");

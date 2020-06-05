@@ -1,8 +1,15 @@
 package adr.precios.view;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,12 +20,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
+import adr.precios.entities.BlogVo;
+import adr.precios.entities.PriceVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.tools.CreateKey;
 import adr.precios.database.DBHelper;
 import adr.precios.wservices.AwsAsync_Login;
+import adr.precios.wservices.AwsAsync_Prices;
+import adr.precios.wservices.ServGenerator_AWS;
+import adr.precios.wservices.servicesGroup;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText edKey;
 
     private String tv_key, branchAcces;
+    static final int PERMISSION_READ_STATE = 123;
 
     public DBHelper dbHelper;
     public ArrayList <SequenceVo> awsListSeq;
@@ -45,7 +65,35 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.createDatabase();
     }
 
-    public void query(View view)  {
+    public void start(View view)  {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            //MyTelephonyManager();
+            query();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    PERMISSION_READ_STATE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PERMISSION_READ_STATE: {
+                if (grantResults.length >= 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    query();
+                } else {
+                    Toast.makeText(MainActivity.this, "Tinees que aceptar el permiso", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void query(){
         String u = edUser.getText().toString();
         String p = edPass.getText().toString();
         tv_key = edKey.getText().toString();
@@ -63,9 +111,53 @@ public class MainActivity extends AppCompatActivity {
         else{
             AwsAsync_Login task1 = new AwsAsync_Login(this);
             task1.execute(1);
-          //  AwsAsync_Login task2 = new AwsAsync_Login(this);
-          //  task2.execute(2);
+            //  AwsAsync_Login task2 = new AwsAsync_Login(this);
+            //  task2.execute(2);
         }
+    }
+
+    public BlogVo addBlog(){
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        int idBranch = Integer.parseInt(branchAcces);
+
+        String currTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        String currDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        BlogVo blog = new BlogVo();
+        blog.setTbi_clave(0);
+        blog.setTbi_numcel(manager.getLine1Number());
+        blog.setTbi_nombre(edUser.getText().toString());
+        blog.setTbi_imei(manager.getDeviceId());
+        blog.setTbi_mac("");
+        blog.setTbi_accion("login  usuario");
+        blog.setTbi_fechahora(currDate+"  "+currTime);
+        blog.setTbi_descripcion("");
+        blog.setTbi_sucursal(idBranch);
+
+        return blog;
+    }
+
+    private void saveAWSBlog (BlogVo blogVo){
+        servicesGroup service = ServGenerator_AWS.createService(servicesGroup.class);
+        final Call<BlogVo> respon_blog = service.saveBlog(blogVo);
+
+        respon_blog.enqueue(new Callback<BlogVo>() {
+            @Override
+            public void onResponse(Call<BlogVo> call, Response<BlogVo> response) {
+
+                if(response.isSuccessful()){
+                    Toast.makeText(MainActivity.this, "POST FUE UN EXITO", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(MainActivity.this, "POST TIENE UN ERROR", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<BlogVo> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "POST ESTA MUERTO", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void awsResp_GetDate(String json_date){
@@ -76,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
             if(key.turnRequest(json_date).equals(tv_key)){
                 AwsAsync_Login task2 = new AwsAsync_Login(this);
                 task2.execute(2);
+
+                saveAWSBlog(addBlog());
             } else{
                 Toast.makeText(MainActivity.this, "Llave Incorrecta", Toast.LENGTH_SHORT).show();
             }

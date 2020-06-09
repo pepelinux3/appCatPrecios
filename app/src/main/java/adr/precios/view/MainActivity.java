@@ -23,16 +23,13 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import adr.precios.entities.BlogVo;
-import adr.precios.entities.PriceVo;
 import adr.precios.entities.SequenceVo;
 import adr.precios.tools.CreateKey;
 import adr.precios.database.DBHelper;
 import adr.precios.wservices.AwsAsync_Login;
-import adr.precios.wservices.AwsAsync_Prices;
 import adr.precios.wservices.ServGenerator_AWS;
 import adr.precios.wservices.servicesGroup;
 import retrofit2.Call;
@@ -69,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            //MyTelephonyManager();
             query();
         } else {
             ActivityCompat.requestPermissions(this,
@@ -87,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length >= 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     query();
                 } else {
-                    Toast.makeText(MainActivity.this, "Tinees que aceptar el permiso", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Tienes que aceptar el permiso", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -146,16 +142,16 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<BlogVo> call, Response<BlogVo> response) {
 
                 if(response.isSuccessful()){
-                    Toast.makeText(MainActivity.this, "POST FUE UN EXITO", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Entra a Grupos", Toast.LENGTH_SHORT).show();
                 } else{
-                    Toast.makeText(MainActivity.this, "POST TIENE UN ERROR", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error al enviar datos de entrada", Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<BlogVo> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "POST ESTA MUERTO", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Falla al enviar datos de entrada", Toast.LENGTH_SHORT).show();
             }
         });
     }

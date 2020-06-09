@@ -117,7 +117,7 @@
         android:layout_marginTop="3dp"
         android:layout_marginEnd="3dp"
         android:layout_marginRight="5dp"
-        android:text="2020-04-20"
+        android:text="Fase 2"
         android:textColor="#F44336"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"

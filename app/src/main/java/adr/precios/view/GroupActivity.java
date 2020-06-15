@@ -50,7 +50,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     public ProgressBar progressBar;
-    public TextView txtProgress;
+    public TextView txtProgress, txtTittle;
 
     public DBHelper dbHelper;
 
@@ -69,6 +69,7 @@ public class GroupActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         txtProgress = (TextView) findViewById(R.id.txtProgress);
+        txtTittle = (TextView) findViewById(R.id.txtTittle);
 
         awsRunning = false;
 
@@ -89,6 +90,8 @@ public class GroupActivity extends AppCompatActivity {
             if(awsListSeq.get(1).getTsec_final() > sqlListSeq.get(1).getTsec_final()  || awsListSeq.get(1).getTsec_restore() > awsListSeq.get(1).getTsec_restore()){
                 progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 txtProgress.setTextColor(Color.GREEN);
+                txtTittle.setTextColor(Color.GREEN);
+                txtTittle.setText("");
 
                 awsInventory = new AwsAsync_Prices(GroupActivity.this);
                 awsInventory.execute(1);
@@ -254,8 +257,10 @@ public class GroupActivity extends AppCompatActivity {
                 sqlListSeq = dbHelper.getTableSequence();
                 dbHelper.close();
 
-                progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                txtProgress.setTextColor(Color.RED);
+                progressBar.getIndeterminateDrawable().setColorFilter(Color.CYAN, PorterDuff.Mode.SRC_IN);
+                txtProgress.setTextColor(Color.CYAN);
+                txtTittle.setTextColor(Color.CYAN);
+                txtTittle.setText("");
 
                 awsGetSequence();
 

@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -11,7 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.example.adrprecios.R;
 
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText edUser;
     private EditText edPass;
     private EditText edKey;
+    private Button btInicio;
+    private ProgressBar progressBar;
 
     private String tv_key, branchAcces;
     static final int PERMISSION_READ_STATE = 123;
@@ -57,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         edUser = findViewById(R.id.txt_user);
         edPass = findViewById(R.id.txt_pass);
         edKey = findViewById(R.id.txt_key);
+        btInicio = findViewById(R.id.bt_login);
+
+        progressBar = (ProgressBar)findViewById(R.id.pbLogin);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
 
         dbHelper = new DBHelper(this);
         dbHelper.createDatabase();
@@ -105,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Usuario no Existe", Toast.LENGTH_SHORT).show();
         }
         else{
+            progressBar.setVisibility(View.VISIBLE);
+            btInicio.setEnabled(false);
+
             AwsAsync_Login task1 = new AwsAsync_Login(this);
             task1.execute(1);
             //  AwsAsync_Login task2 = new AwsAsync_Login(this);
@@ -168,10 +181,14 @@ public class MainActivity extends AppCompatActivity {
                 saveAWSBlog(addBlog());
             } else{
                 Toast.makeText(MainActivity.this, "Llave Incorrecta", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                btInicio.setEnabled(true);
             }
 
         } else{
             Toast.makeText(MainActivity.this, "no hay internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+            btInicio.setEnabled(true);
         }
     }
 
@@ -195,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "no hay conexion al servidor", Toast.LENGTH_SHORT).show();
                 entraGrupos(branchAcces);
             }
+
+            progressBar.setVisibility(View.GONE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -257,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         act_grupos.putExtra("noBranch", idBranch);
         act_grupos.putExtra("startPrices", true);
 
+        btInicio.setEnabled(true);
         startActivity(act_grupos);
     }
 }

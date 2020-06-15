@@ -23,9 +23,9 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content">
+        android:layout_height="120dp">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -43,11 +43,21 @@
         <TextView
             android:id="@+id/txtProgress"
             android:layout_width="wrap_content"
-            android:text="0 %"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/progressBar"
+            android:text="0 %"
             android:layout_centerInParent="true"
             android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/txtTittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/progressBar"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>
 

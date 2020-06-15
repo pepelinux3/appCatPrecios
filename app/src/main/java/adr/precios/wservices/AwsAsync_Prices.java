@@ -31,6 +31,7 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
     private int awsGruRestore, awsSubRestore, awsItemRestore, awsPriRestore, awsInvRestore;
     private int sqlGruRestore, sqlSubRestore, sqlItemRestore, sqlPriRestore, sqlInvRestore;
     private int option;
+    String titulo;
 
     public AwsAsync_Prices(GroupActivity activity) {
         activityWeakReference = new WeakReference<GroupActivity>(activity);
@@ -72,8 +73,10 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
 
         activity.progressBar.setVisibility(View.VISIBLE);
         activity.txtProgress.setVisibility(View.VISIBLE);
+        activity.txtTittle.setVisibility(View.VISIBLE);
 
         activity.awsRunning = true;
+        titulo = "";
     }
 
     @Override
@@ -81,35 +84,42 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
         option = integers[0];
         boolean actualiza = false;
         String mensaje = "";
+
         GroupActivity activity = activityWeakReference.get();
 
         System.out.println("COMPARA RESTORE GRUPO aws = "+awsGruRestore+"  y  RESTORE sql =  "+sqlGruRestore+" **********************************************");
         if(awsGruRestore > sqlGruRestore) {     //    BLANCO
+            titulo = "Act. Grupos";
             System.out.println("Entra a update");
             restGroups();
             actualiza = true;
         } else
             if (awsGruFinal > sqlGruFinal) {
+                titulo = "Act. Grupos";
                 System.out.println("Entra a grupos   ***************************************************************************");
                 newGroups();
                 actualiza = true;
             }
 
         if(awsSubRestore > sqlSubRestore) {    //    TURQUESA
+            titulo = "Act. Subgrupos";
             restSubgroups();
             actualiza = true;
         } else
             if (awsSubFinal > sqlSubFinal) {
+                titulo = "Act. Subgrupos";
                 System.out.println("Entra a subgrupos  ***************************************************************************");
                 newSubgroups();
                 actualiza = true;
             }
 
         if(awsItemRestore > sqlItemRestore){
+            titulo = "Act. Articulos";
             restItems();
             actualiza = true;
         } else
             if (awsItemFinal > sqlItemFinal) {
+                titulo = "Act. Articulos";
                 System.out.println("Entra a articulos   ***************************************************************************");
                 addUpdateItems();
                 actualiza = true;
@@ -117,10 +127,12 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
 
         if(option == 1){
             if(awsPriRestore > sqlPriRestore){
+                titulo = "Act. Precios";
                 restPrices();
                 actualiza = true;
             } else
             if(awsPriFinal > sqlPriFinal){
+                titulo = "Act. Precios";
                 System.out.println("Entra a Precios final = "+sqlPriFinal+" ***************************************************************************");
                 addUpdatePrices();
                 actualiza = true;
@@ -129,16 +141,17 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
 
         if(option == 2){
             if(awsInvRestore > sqlInvRestore){
+                titulo = "Act. Inventarios";
                 restInventory();
                 actualiza = true;
             } else
             if(awsInvFinal > sqlInvFinal){
+                titulo = "Act. Inventarios";
                 System.out.println("Entra a inventario  final = "+sqlInvFinal+" ***************************************************************************");
                 updateInventory();
                 actualiza = true;
             }
         }
-
 
         if(actualiza)
             mensaje = "Actualizacion terminada con exito";
@@ -157,6 +170,7 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
         }
 
         activity.txtProgress.setText(values[0]+" %");
+        activity.txtTittle.setText(titulo);
         activity.progressBar.setProgress(values[0]);
     }
 
@@ -170,6 +184,7 @@ public class AwsAsync_Prices extends AsyncTask <Integer, Integer, String> {
 
         activity.progressBar.setVisibility(View.GONE);
         activity.txtProgress.setVisibility(View.GONE);
+        activity.txtTittle.setVisibility(View.GONE);
 
         activity.awsAsyncTaskFinish(msj);
 

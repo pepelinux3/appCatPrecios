@@ -17,7 +17,7 @@
 
         <item
             android:id="@+id/me_actualizar"
-            android:title="Actualizar"
+            android:title="Actualizar Inv."
             app:showAsAction="never"/>
 
         <item

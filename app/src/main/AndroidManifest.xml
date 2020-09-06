@@ -13,10 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <activity android:name="adr.precios.view.PriceFullActivity" />
+        <activity android:name="adr.precios.view.PriceFullActivity"
+                  android:configChanges="orientation|screenSize"/>
         <activity android:name="adr.precios.view.ImagenActivity" />
         <activity android:name="adr.precios.view.PriceActivity"
-            android:configChanges="orientation|screenSize"/>
+                  android:configChanges="orientation|screenSize"/>
         <activity android:name="adr.precios.view.GroupActivity" />
         <activity android:name="adr.precios.view.MainActivity">
             <intent-filter>

@@ -40,6 +40,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_ALTER_TEAM_TO_V2 = "ALTER TABLE "
             + TABLE_DB1 + " ADD COLUMN " + COLUMN_DB1_ + " VARCHAR ( 45 ) DEFAULT 'xxx';";
 
+    private static final String LIST_PRICE_COATZA = "UPDATE sucursales SET suc_lise_clave = 18 WHERE suc_clave = 3";
+
     public ArrayList <GroupVo> grupos;
 
     private ArrayList <ActiPriceVo> Item;
@@ -55,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
             R.drawable.viazul};
 
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 2);
 
         if(Build.VERSION.SDK_INT >= 17)
             DB_PATH = context.getApplicationInfo().dataDir+"/databases/";
@@ -179,13 +181,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*
+
         switch (oldVersion) {
-            case 1: db.execSQL(DATABASE_ALTER_TEAM_TO_V2);
+            case 1: db.execSQL(LIST_PRICE_COATZA);
         }
 
         System.out.println("REVISA LA VERSION XXXXXXXXXXXXXXXXXXXXXXXXXXXXX  *************************************************");
-        */
 
     }
 
@@ -234,9 +235,10 @@ public class DBHelper extends SQLiteOpenHelper {
         c = db.rawQuery("SELECT art_clave, art_clavearticulo, art_nombrelargo, lisd_fecha, "+
                         "       IFNULL(art_impuesto * lisd_precio, -999) , subg_clave, subg_nombre, subg_descripcion "+
                         "  FROM subgrupos, sucursales, listapreciosEncabezado, "+
-					    "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
-					    "   and lisd_lise_clave = lise_clave "+
+					    "       articulos, listapreciosdetalle "+
                         " WHERE art_subg_clave = subg_clave "+
+                        "   and lisd_lise_clave = lise_clave "+
+                        "   and lisd_art_clave = art_clave"+
                         "   and suc_emp_clave = art_emp_clave "+
                         "   and suc_lise_clave = lise_clave "+
                         "   and suc_clave = "+idBranch+
@@ -256,14 +258,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return Item;
     }
-
+    //  art_nombrelargo, lisd_fecha, IFNULL(art_impuesto * lisd_precio, -999)
     public ArrayList<ActiPriceVo> getPriceItemFull(String idBranch){
         c = db.rawQuery("SELECT art_clave, gru_nombre, subg_nombre, art_clavearticulo,   " +
                 "       art_nombrelargo, lisd_fecha, IFNULL(art_impuesto * lisd_precio, -999) "+
                 "  FROM subgrupos, grupos, listapreciosEncabezado, sucursales, "+
-                "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
-                "   and lisd_lise_clave = lise_clave "+
+                "       articulos, listapreciosdetalle "+
                 " WHERE art_subg_clave = subg_clave "+
+                "   and lisd_lise_clave = lise_clave "+
+                "   and lisd_art_clave = art_clave "+
                 "   and subg_gru_clave = gru_clave "+
                 "   and suc_lise_clave = lise_clave"+
                 "   and art_emp_clave = suc_emp_clave "+
@@ -283,11 +286,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<StockBranchVo> getInventory(String noItem){
         c = db.rawQuery("SELECT suc_clave, suc_nombreCorto, inv_existencia, IFNULL(lisd_precio * art_impuesto, 0) as lisd_precio " +
                 "  FROM sucursales, inventario, listapreciosEncabezado,  " +
-                "       articulos LEFT join listapreciosdetalle ON lisd_art_clave = art_clave "+
-                "   and lisd_lise_clave = lise_clave "+
+                "       articulos, listapreciosdetalle "+
                 " WHERE inv_suc_clave = suc_clave "+
+                "   and lisd_lise_clave = lise_clave "+
                 "   and suc_lise_clave = lise_clave "+
-
+                "   and lisd_art_clave = art_clave "+
                 "   and inv_art_clave = art_clave "+
                 "   and art_clavearticulo = '"+noItem+"'"+
                 "   and suc_status = 1"+

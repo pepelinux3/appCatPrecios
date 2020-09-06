@@ -3,6 +3,7 @@ package adr.precios.view;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -70,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         dbHelper.createDatabase();
+
+        SharedPreferences prefer_user = getSharedPreferences("savelogin", Context.MODE_PRIVATE);
+
+        edUser.setText(prefer_user.getString("user", ""));
+        edPass.setText(prefer_user.getString("pass", ""));
+        edKey.setText(prefer_user.getString("key", ""));
     }
 
     public void start(View view)  {
@@ -77,6 +84,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             query();
+
+            SharedPreferences preferencias = getSharedPreferences("savelogin", Context.MODE_PRIVATE);
+            SharedPreferences.Editor obj_editor = preferencias.edit();
+
+            obj_editor.putString("user", edUser.getText().toString());
+            obj_editor.putString("pass", edPass.getText().toString());
+            obj_editor.putString("key", edKey.getText().toString());
+
+            obj_editor.commit();
+
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_PHONE_STATE},
